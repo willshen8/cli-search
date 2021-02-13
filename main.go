@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/willshen8/zendesk-coding-challenge/pkg/search"
@@ -35,34 +34,28 @@ func main() {
 
 	// Process search command
 	case query.FullCommand():
-		orgFile, _ := os.Open(defaultOrganisationsFile)
-		organisations, err := search.ParseJsonOrgs(orgFile)
-		search.HandleError(err)
-
-		userFile, _ := os.Open(defaultUserFile)
-		users, err := search.ParseJsonUsers(userFile)
-		search.HandleError(err)
-
-		ticketFile, _ := os.Open(defaultTicketsFile)
-		tickets, err := search.ParseJsonTickets(ticketFile)
-		search.HandleError(err)
-
-		fmt.Println("organisations", len(organisations))
-		fmt.Println("users", len(users))
-		fmt.Println("tickets", len(tickets))
+		switch *queryTable {
+		case "organisation":
+			orgFile, _ := os.Open(defaultOrganisationsFile)
+			orgMap, err := search.ParseJsonToMapOfMap(orgFile)
+			search.HandleError(err)
+			searchResults, err := search.Search(orgMap, *queryField, *queryValue)
+			search.HandleError(err)
+			search.PrintResults(searchResults)
+		case "ticket":
+			userFile, _ := os.Open(defaultUserFile)
+			usersMap, err := search.ParseJsonToMapOfMap(userFile)
+			search.HandleError(err)
+			searchResults, err := search.Search(usersMap, *queryField, *queryValue)
+			search.HandleError(err)
+			search.PrintResults(searchResults)
+		case "user":
+			ticketFile, _ := os.Open(defaultTicketsFile)
+			ticketsMap, err := search.ParseJsonToMapOfMap(ticketFile)
+			search.HandleError(err)
+			searchResults, err := search.Search(ticketsMap, *queryField, *queryValue)
+			search.HandleError(err)
+			search.PrintResults(searchResults)
+		}
 	}
 }
-
-// Configs contains the arguments parsed from command line
-type Config struct {
-	organization_file *os.File
-	user_file         *os.File
-	ticket_file       *os.File
-}
-
-// Search is a structure that contains the specific search item parsed from command line
-// type Search struct {
-// 	table string
-// 	field string
-// 	value string
-// }
