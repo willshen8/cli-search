@@ -10,9 +10,9 @@ import (
 var (
 	args                     = os.Args[1:]
 	app                      = kingpin.New("Zendesk-Search", "Welcome to Zendesk Search!")
-	defaultOrganisationsFile = "./config/organizations.json"
-	defaultUserFile          = "./config/users.json"
-	defaultTicketsFile       = "./config/tickets.json"
+	defaultOrganisationsFile = "../config/organizations.json"
+	defaultUsersFile         = "../config/users.json"
+	defaultTicketsFile       = "../config/tickets.json"
 
 	// config is a command that user can execute followed by the name of 3 files
 	config             = app.Command("config", "Config the data source files by specifying the files you want to use.")
@@ -41,21 +41,21 @@ func main() {
 			search.HandleError(err)
 			searchResults, err := search.Search(orgMap, *queryField, *queryValue)
 			search.HandleError(err)
-			search.PrintResults(searchResults)
+			search.PrintResults(orgMap, searchResults)
 		case "ticket":
-			userFile, _ := os.Open(defaultUserFile)
+			userFile, _ := os.Open(defaultTicketsFile)
 			usersMap, err := search.ParseJsonToMapOfMap(userFile)
 			search.HandleError(err)
 			searchResults, err := search.Search(usersMap, *queryField, *queryValue)
 			search.HandleError(err)
-			search.PrintResults(searchResults)
+			search.PrintResults(usersMap, searchResults)
 		case "user":
-			ticketFile, _ := os.Open(defaultTicketsFile)
+			ticketFile, _ := os.Open(defaultUsersFile)
 			ticketsMap, err := search.ParseJsonToMapOfMap(ticketFile)
 			search.HandleError(err)
 			searchResults, err := search.Search(ticketsMap, *queryField, *queryValue)
 			search.HandleError(err)
-			search.PrintResults(searchResults)
+			search.PrintResults(ticketsMap, searchResults)
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package search
 
 import (
+	"fmt"
 	"sort"
 )
 
@@ -9,6 +10,7 @@ func Search(table map[string]map[string]interface{}, field string, value string)
 	if _, found := OrgMap[field]; !found {
 		return nil, ErrInvalidSearchField
 	}
+
 	var result []string
 	if value == "" {
 		for k := range table {
@@ -19,10 +21,14 @@ func Search(table map[string]map[string]interface{}, field string, value string)
 	}
 
 	for k, v := range table {
-		if v[field] == value {
+		if fmt.Sprintf("%v", v[field]) == value {
 			result = append(result, string(k))
 		}
 	}
 	sort.Strings(result)
 	return result, nil
+}
+
+func FindRelatedData(table map[string]map[string]interface{}) {
+
 }

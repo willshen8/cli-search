@@ -11,7 +11,7 @@ import (
 // a map of maps for efficient search
 func ParseJsonToMapOfMap(r io.Reader) (map[string]map[string]interface{}, error) {
 	var mapSlice []map[string]interface{}
-	result := make(map[string]map[string]interface{}, len(mapSlice))
+	result := make(map[string]map[string]interface{})
 	data, err := ioutil.ReadAll(r)
 	if err != nil {
 		return result, err
