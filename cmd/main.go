@@ -28,37 +28,35 @@ var (
 )
 
 func main() {
+	// database is a three level map with each level contains table -> row -> value
+	dataBase := make(map[string]map[string]map[string]interface{}, 3)
 	switch kingpin.MustParse(app.Parse(args)) {
 	// Process config command
 	case config.FullCommand():
 
 	// Process search command
 	case query.FullCommand():
-		orgFile, _ := os.Open(defaultOrganisationsFile)
+
+		orgFile, err := os.Open(defaultOrganisationsFile)
+		search.HandleError(err)
 		orgMap, err := search.ParseJsonToMapOfMap(orgFile)
+		search.HandleError(err)
+		dataBase["organisation"] = orgMap
 
-		userFile, _ := os.Open(defaultTicketsFile)
+		userFile, err := os.Open(defaultUsersFile)
+		search.HandleError(err)
 		usersMap, err := search.ParseJsonToMapOfMap(userFile)
+		search.HandleError(err)
+		dataBase["user"] = usersMap
 
-		ticketFile, _ := os.Open(defaultUsersFile)
+		ticketFile, err := os.Open(defaultTicketsFile)
+		search.HandleError(err)
 		ticketsMap, err := search.ParseJsonToMapOfMap(ticketFile)
+		search.HandleError(err)
+		dataBase["ticket"] = ticketsMap
 
-		switch *queryTable {
-		case "organisation":
-			search.HandleError(err)
-			searchResults, err := search.Search(orgMap, "organisation", *queryField, *queryValue)
-			search.HandleError(err)
-			search.PrintResults("organisation", searchResults, orgMap, usersMap, ticketsMap)
-		case "ticket":
-			search.HandleError(err)
-			searchResults, err := search.Search(ticketsMap, "ticket", *queryField, *queryValue)
-			search.HandleError(err)
-			search.PrintResults("ticket", searchResults, orgMap, usersMap, ticketsMap)
-		case "user":
-			search.HandleError(err)
-			searchResults, err := search.Search(usersMap, "user", *queryField, *queryValue)
-			search.HandleError(err)
-			search.PrintResults("user", searchResults, orgMap, usersMap, ticketsMap)
-		}
+		searchResults, err := search.Search(dataBase[*queryTable], *queryTable, *queryField, *queryValue)
+		search.HandleError(err)
+		search.PrintResults(*queryTable, searchResults, orgMap, usersMap, ticketsMap)
 	}
 }

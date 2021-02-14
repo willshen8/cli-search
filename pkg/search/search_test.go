@@ -231,6 +231,40 @@ func TestSearchByID(t *testing.T) {
 	assert.Equal(t, nil, err)
 }
 
+func TestSearchByEachField(t *testing.T) {
+	var testData = strings.NewReader(`[
+	{
+	  "_id": 101,
+	  "url": "http://initech.zendesk.com/api/v2/organizations/101.json",
+	  "external_id": "9270ed79-35eb-4a38-a46f-35725197ea8d",
+	  "name": "Enthaze",
+	  "domain_names": [
+		"kage.com",
+		"ecratic.com",
+		"endipin.com",
+		"zentix.com"
+	  ],
+	  "created_at": "2016-05-21T11:10:28 -10:00",
+	  "details": "MegaCorp",
+	  "shared_tickets": false,
+	  "tags": [
+		"Fulton",
+		"West",
+		"Rodriguez",
+		"Farley"
+	  ]
+	}
+  ]`)
+	organisationMap, err := ParseJsonToMapOfMap(testData)
+	assert.Equal(t, nil, err)
+	for key := range OrgMap {
+		actual, err := Search(organisationMap, "organisation", key, "")
+		assert.NotNil(t, actual)
+		assert.Equal(t, nil, err)
+
+	}
+}
+
 func TestSearchWithoutSpecifiedValue(t *testing.T) {
 	var testData = strings.NewReader(`[
 	{
