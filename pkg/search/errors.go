@@ -13,5 +13,6 @@ func HandleError(err error) {
 }
 
 var (
+	ErrInvalidTable       = errors.New("You have specified an incorrect table")
 	ErrInvalidSearchField = errors.New("Invalid search field")
 )

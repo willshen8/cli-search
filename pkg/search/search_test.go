@@ -225,7 +225,7 @@ func TestSearchByID(t *testing.T) {
   ]`)
 	organisationMap, err := ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
-	actual, err := Search(organisationMap, "organisaton", "_id", "101")
+	actual, err := Search(organisationMap, "organisation", "_id", "101")
 	var expectedResultID = []string{"101"}
 	assert.Equal(t, expectedResultID, actual)
 	assert.Equal(t, nil, err)

@@ -20,6 +20,8 @@ func Search(m map[string]map[string]interface{}, table string, field string, val
 		if _, found := TicketMap[field]; !found {
 			return nil, ErrInvalidSearchField
 		}
+	default:
+		return nil, ErrInvalidTable
 	}
 
 	var result []string
@@ -45,7 +47,7 @@ func Search(m map[string]map[string]interface{}, table string, field string, val
 func SearchRelatedEntities(table string, id string, orgMap map[string]map[string]interface{},
 	userMap map[string]map[string]interface{}, ticketMap map[string]map[string]interface{}) map[string][]string {
 	var result = make(map[string][]string)
-	var organisationIds, userIds, ticketIds []string
+	var userIds, ticketIds []string
 	switch table {
 	case "organisation":
 		for _, foreignKey := range organisationEnity.foreignKeys {
@@ -64,7 +66,6 @@ func SearchRelatedEntities(table string, id string, orgMap map[string]map[string
 		}
 	}
 	// store the 3 sets of results into the result map
-	result["organisation"] = organisationIds
 	result["user"] = userIds
 	result["ticket"] = ticketIds
 	return result

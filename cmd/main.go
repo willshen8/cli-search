@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/willshen8/zendesk-coding-challenge/pkg/search"
@@ -35,29 +34,31 @@ func main() {
 
 	// Process search command
 	case query.FullCommand():
+		// data is an integrated data source that contains all tables
+		orgFile, _ := os.Open(defaultOrganisationsFile)
+		orgMap, err := search.ParseJsonToMapOfMap(orgFile)
+		userFile, _ := os.Open(defaultTicketsFile)
+		usersMap, err := search.ParseJsonToMapOfMap(userFile)
+		ticketFile, _ := os.Open(defaultUsersFile)
+		ticketsMap, err := search.ParseJsonToMapOfMap(ticketFile)
+
 		switch *queryTable {
 		case "organisation":
-			orgFile, _ := os.Open(defaultOrganisationsFile)
-			orgMap, err := search.ParseJsonToMapOfMap(orgFile)
 			search.HandleError(err)
 			searchResults, err := search.Search(orgMap, "organisation", *queryField, *queryValue)
 			search.HandleError(err)
-			search.PrintResults(orgMap, searchResults)
+			search.PrintResults("organisation", searchResults, orgMap, usersMap, ticketsMap)
 		case "ticket":
-			userFile, _ := os.Open(defaultTicketsFile)
-			usersMap, err := search.ParseJsonToMapOfMap(userFile)
-			fmt.Println("usersMap", usersMap)
+
 			search.HandleError(err)
-			searchResults, err := search.Search(usersMap, "user", *queryField, *queryValue)
+			searchResults, err := search.Search(usersMap, "ticket", *queryField, *queryValue)
 			search.HandleError(err)
-			search.PrintResults(usersMap, searchResults)
+			search.PrintResults("ticket", searchResults, orgMap, usersMap, ticketsMap)
 		case "user":
-			ticketFile, _ := os.Open(defaultUsersFile)
-			ticketsMap, err := search.ParseJsonToMapOfMap(ticketFile)
 			search.HandleError(err)
-			searchResults, err := search.Search(ticketsMap, "ticket", *queryField, *queryValue)
+			searchResults, err := search.Search(ticketsMap, "user", *queryField, *queryValue)
 			search.HandleError(err)
-			search.PrintResults(ticketsMap, searchResults)
+			search.PrintResults("user", searchResults, orgMap, usersMap, ticketsMap)
 		}
 	}
 }
