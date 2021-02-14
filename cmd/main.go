@@ -34,11 +34,12 @@ func main() {
 
 	// Process search command
 	case query.FullCommand():
-		// data is an integrated data source that contains all tables
 		orgFile, _ := os.Open(defaultOrganisationsFile)
 		orgMap, err := search.ParseJsonToMapOfMap(orgFile)
+
 		userFile, _ := os.Open(defaultTicketsFile)
 		usersMap, err := search.ParseJsonToMapOfMap(userFile)
+
 		ticketFile, _ := os.Open(defaultUsersFile)
 		ticketsMap, err := search.ParseJsonToMapOfMap(ticketFile)
 
@@ -49,14 +50,13 @@ func main() {
 			search.HandleError(err)
 			search.PrintResults("organisation", searchResults, orgMap, usersMap, ticketsMap)
 		case "ticket":
-
 			search.HandleError(err)
-			searchResults, err := search.Search(usersMap, "ticket", *queryField, *queryValue)
+			searchResults, err := search.Search(ticketsMap, "ticket", *queryField, *queryValue)
 			search.HandleError(err)
 			search.PrintResults("ticket", searchResults, orgMap, usersMap, ticketsMap)
 		case "user":
 			search.HandleError(err)
-			searchResults, err := search.Search(ticketsMap, "user", *queryField, *queryValue)
+			searchResults, err := search.Search(usersMap, "user", *queryField, *queryValue)
 			search.HandleError(err)
 			search.PrintResults("user", searchResults, orgMap, usersMap, ticketsMap)
 		}
