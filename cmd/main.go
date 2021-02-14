@@ -57,6 +57,6 @@ func main() {
 
 		searchResults, err := search.Search(dataBase[*queryTable], *queryTable, *queryField, *queryValue)
 		search.HandleError(err)
-		search.PrintResults(*queryTable, searchResults, orgMap, usersMap, ticketsMap)
+		search.PrintResults(*queryTable, searchResults, dataBase)
 	}
 }

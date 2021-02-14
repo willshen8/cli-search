@@ -3,30 +3,18 @@ package search
 import "fmt"
 
 // PrintResults prints out the search results and its related entities
-func PrintResults(table string, ids []string, orgMap map[string]map[string]interface{},
-	userMap map[string]map[string]interface{}, ticketMap map[string]map[string]interface{}) {
+func PrintResults(table string, ids []string, dataBase map[string]map[string]map[string]interface{}) {
 	fmt.Println("----------------------------------------------------------------------")
 	fmt.Println("Search Results: Total number of records found = ", len(ids))
 	for index, val := range ids {
 		fmt.Println("----------------------------------------------------------------------")
 		fmt.Println("----------------------------- Result ", index+1, "-----------------------------")
 		fmt.Println("----------------------------------------------------------------------")
-		switch table {
-		case "organisation":
-			for k, v := range orgMap[val] {
-				fmt.Printf("%-20v %-10v\n", k, v)
-			}
-		case "user":
-			for k, v := range userMap[val] {
-				fmt.Printf("%-20v %-10v\n", k, v)
-			}
-		case "ticket":
-			for k, v := range ticketMap[val] {
-				fmt.Printf("%-20v %-10v\n", k, v)
-			}
-		}
 
-		PrintRelatedEntities(table, val, orgMap, userMap, ticketMap)
+		for k, v := range dataBase[table][val] {
+			fmt.Printf("%-20v %-10v\n", k, v)
+		}
+		PrintRelatedEntities(table, val, dataBase)
 	}
 	fmt.Println("----------------------------------------------------------------------")
 	fmt.Println("------------------------ End of Search Result ------------------------")
@@ -35,15 +23,14 @@ func PrintResults(table string, ids []string, orgMap map[string]map[string]inter
 
 // PrintRelatedEntities takes a lists of ids from search results and returns the related data
 // from the other tables, it will only print out the IDs from the other tables
-func PrintRelatedEntities(table string, id string, orgMap map[string]map[string]interface{},
-	userMap map[string]map[string]interface{}, ticketMap map[string]map[string]interface{}) {
+func PrintRelatedEntities(table string, id string, dataBase map[string]map[string]map[string]interface{}) {
 	switch table {
 	case "organisation":
-		relatedEntities := SearchRelatedEntities(table, id, orgMap, userMap, ticketMap)
+		relatedEntities := SearchRelatedEntities(table, id, dataBase)
 		PrintEntity("user", relatedEntities)
 		PrintEntity("ticket", relatedEntities)
 	case "user":
-		relatedEntities := SearchRelatedEntities(table, id, orgMap, userMap, ticketMap)
+		relatedEntities := SearchRelatedEntities(table, id, dataBase)
 		PrintEntity("ticket", relatedEntities)
 	}
 }

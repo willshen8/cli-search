@@ -44,23 +44,22 @@ func Search(m map[string]map[string]interface{}, table string, field string, val
 
 // SearchRelatedEntities takes the id of the table and search for related entities in the other two tables
 // and then store the results in a map of slice
-func SearchRelatedEntities(table string, id string, orgMap map[string]map[string]interface{},
-	userMap map[string]map[string]interface{}, ticketMap map[string]map[string]interface{}) map[string][]string {
+func SearchRelatedEntities(table string, id string, dataBase map[string]map[string]map[string]interface{}) map[string][]string {
 	var result = make(map[string][]string)
 	var userIds, ticketIds []string
 	switch table {
 	case "organisation":
 		for _, foreignKey := range organisationEnity.foreignKeys {
-			foundUsers, err := Search(userMap, "user", foreignKey, id) // search user table first
+			foundUsers, err := Search(dataBase["user"], "user", foreignKey, id) // search user table first
 			userIds = append(userIds, foundUsers...)
 			HandleError(err)
-			foundTickets, err := Search(ticketMap, "ticket", foreignKey, id) // then search ticket table
+			foundTickets, err := Search(dataBase["ticket"], "ticket", foreignKey, id) // then search ticket table
 			ticketIds = append(ticketIds, foundTickets...)
 			HandleError(err)
 		}
 	case "user":
 		for _, foreignKey := range userEntity.foreignKeys {
-			foundTickets, err := Search(ticketMap, "ticket", foreignKey, id) // then search ticket table
+			foundTickets, err := Search(dataBase["ticket"], "ticket", foreignKey, id) // then search ticket table
 			ticketIds = append(ticketIds, foundTickets...)
 			HandleError(err)
 		}
