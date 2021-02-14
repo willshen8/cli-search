@@ -52,7 +52,6 @@ func TestParseJsonToMapOfMap(t *testing.T) {
 	  ]
 	}
   ]`)
-
 	actual, err := ParseJsonToMapOfMap(parseTestData)
 	assert.Equal(t, nil, err)
 	expectedNumberOfRecords := 2
@@ -60,4 +59,15 @@ func TestParseJsonToMapOfMap(t *testing.T) {
 	assert.Equal(t, "MegaCorp", actual["101"]["details"])
 	assert.Equal(t, false, actual["102"]["shared_tickets"])
 	assert.Equal(t, float64(102), actual["102"]["_id"])
+	assert.Equal(t, "http://initech.zendesk.com/api/v2/organizations/102.json", actual["102"]["url"])
+}
+
+func TestUnmarshallErrorData(t *testing.T) {
+	var errorData = strings.NewReader(`[
+		{
+			"_id": "101"
+		  }
+	]`)
+	_, err := ParseJsonToMapOfMap(errorData)
+	assert.Equal(t, nil, err)
 }

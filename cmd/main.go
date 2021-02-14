@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/willshen8/zendesk-coding-challenge/pkg/search"
@@ -39,21 +40,22 @@ func main() {
 			orgFile, _ := os.Open(defaultOrganisationsFile)
 			orgMap, err := search.ParseJsonToMapOfMap(orgFile)
 			search.HandleError(err)
-			searchResults, err := search.Search(orgMap, *queryField, *queryValue)
+			searchResults, err := search.Search(orgMap, "organisation", *queryField, *queryValue)
 			search.HandleError(err)
 			search.PrintResults(orgMap, searchResults)
 		case "ticket":
 			userFile, _ := os.Open(defaultTicketsFile)
 			usersMap, err := search.ParseJsonToMapOfMap(userFile)
+			fmt.Println("usersMap", usersMap)
 			search.HandleError(err)
-			searchResults, err := search.Search(usersMap, *queryField, *queryValue)
+			searchResults, err := search.Search(usersMap, "user", *queryField, *queryValue)
 			search.HandleError(err)
 			search.PrintResults(usersMap, searchResults)
 		case "user":
 			ticketFile, _ := os.Open(defaultUsersFile)
 			ticketsMap, err := search.ParseJsonToMapOfMap(ticketFile)
 			search.HandleError(err)
-			searchResults, err := search.Search(ticketsMap, *queryField, *queryValue)
+			searchResults, err := search.Search(ticketsMap, "ticket", *queryField, *queryValue)
 			search.HandleError(err)
 			search.PrintResults(ticketsMap, searchResults)
 		}

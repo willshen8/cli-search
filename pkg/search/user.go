@@ -17,7 +17,7 @@ var UserMap = map[string]bool{
 	"email":           true,
 	"phone":           true,
 	"signature":       true,
-	"organisation_id": true,
+	"organization_id": true,
 	"tags":            true,
 	"suspended":       true,
 	"role":            true,
