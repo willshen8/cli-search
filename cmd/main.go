@@ -10,9 +10,9 @@ import (
 var (
 	args                     = os.Args[1:]
 	app                      = kingpin.New("Zendesk-Search", "Welcome to Zendesk Search!")
-	defaultOrganisationsFile = "../config/organizations.json"
-	defaultUsersFile         = "../config/users.json"
-	defaultTicketsFile       = "../config/tickets.json"
+	defaultOrganisationsFile = "config/organizations.json"
+	defaultUsersFile         = "config/users.json"
+	defaultTicketsFile       = "config/tickets.json"
 
 	// config is a command that user can execute followed by the name of 3 files
 	config             = app.Command("config", "Config the data source files by specifying the files you want to use.")

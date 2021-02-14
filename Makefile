@@ -1,7 +1,7 @@
 all: build test lint coverage
 
 build:
-	go build ./...
+	go build -o zendesk cmd/main.go
 
 test:
 	go test ./...
