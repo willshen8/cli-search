@@ -4,6 +4,7 @@
 * [User Guide](#run-the-program)
 * [Design decisions](#design-decisions)
 * [Assumptions](#assumption)
+* [Limitations](#limitations)
 
 ---
 ## Installation
@@ -12,16 +13,16 @@
 2. Clone the project into your desired directory:
 
 ```
-git clone https://github.com/willshen8/zendesk-coding-challenge.git zendesk
+$ git clone https://github.com/willshen8/zendesk-coding-challenge.git zendesk
 ```
 
 3. cd into the cloned directory:
 
 ```
-cd zendesk
+$ cd zendesk
 ```
 
-4. Build the executable cli program
+4. Build the executable
 
 A Makefile is already created for you and you can simple run
 ```
@@ -32,17 +33,24 @@ and then an executable called `zendesk` is created at the root level of your clo
 
 ---
 ## Run the program
-1. Configuration files - The 3 JSON files are stored in the `config` directory by default.
 
-2. To start search run the following command:
+1. To start search run the following command:
 ```
 $ ./zendesk query organisation _id 101
 ```
 
 where the command follow the convention of 
 ```
-query <table> <field> <value>
+$ ./zendesk query <table> <field> <value>
+
 ```
+2. Configuration files:
+The 3 JSON files are stored in the `config` directory by default. To specify the data source you wish to use, use the following command:
+
+```
+$ ./zendesk config <organisations.json> <users.json> <tickets.json>
+```
+The order of the files matters.
 
 3. To get help, type 
 ```
@@ -85,8 +93,6 @@ $ make coverage
 ```
 $ make all
 ```
----
-
 # Design Decisions
 
 1. Data structure:
@@ -114,8 +120,9 @@ As we are using map, adding additional tables is simply a matter of insert into 
 ---
 # Assumptions
 
-1. `external_id`field appears to be linked to external system and bears no relationship with other tables.
+1. `external_id` field appears to be linked to external system and bears no relationship with other tables.
 
 # Limitations
 
 1. The size of the database is depend on the hardware or the max size of the heap, as it is implemented using `map`.
+2. Use the `config` command option to specify the source data files, the order matters. Due to time constraint I have not implemented checks to ensure the right files are specified.

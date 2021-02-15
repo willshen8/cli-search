@@ -54,7 +54,7 @@ func TestSearchSuccess(t *testing.T) {
   ]`)
 	organisationMap, err := ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
-	actual, err := Search(organisationMap, "organisation", "external_id", "9270ed79-35eb-4a38-a46f-35725197ea8d")
+	actual, err := Search(organisationMap, ORGANISATION, "external_id", "9270ed79-35eb-4a38-a46f-35725197ea8d")
 	var expectedResultID = []string{"101"}
 	assert.Equal(t, expectedResultID, actual)
 	assert.Equal(t, nil, err)
@@ -193,7 +193,7 @@ func TestSearchInvalidFieldInTicketTable(t *testing.T) {
   ]`)
 	organisationMap, err := ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
-	actual, err := Search(organisationMap, "organisation", "invalidField", "")
+	actual, err := Search(organisationMap, ORGANISATION, "invalidField", "")
 	expectedResult := []string(nil)
 	expectedErr := ErrInvalidSearchField
 	assert.Equal(t, expectedResult, actual)
@@ -225,7 +225,7 @@ func TestSearchByID(t *testing.T) {
   ]`)
 	organisationMap, err := ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
-	actual, err := Search(organisationMap, "organisation", "_id", "101")
+	actual, err := Search(organisationMap, ORGANISATION, "_id", "101")
 	var expectedResultID = []string{"101"}
 	assert.Equal(t, expectedResultID, actual)
 	assert.Equal(t, nil, err)
@@ -258,7 +258,7 @@ func TestSearchByEachField(t *testing.T) {
 	organisationMap, err := ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
 	for key := range OrgMap {
-		actual, err := Search(organisationMap, "organisation", key, "")
+		actual, err := Search(organisationMap, ORGANISATION, key, "")
 		assert.NotNil(t, actual)
 		assert.Equal(t, nil, err)
 
@@ -312,7 +312,7 @@ func TestSearchWithoutSpecifiedValue(t *testing.T) {
   ]`)
 	organisationMap, err := ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
-	actual, err := Search(organisationMap, "organisation", "external_id", "")
+	actual, err := Search(organisationMap, ORGANISATION, "external_id", "")
 	var expectedResultIDs = []string{"101", "102"}
 	assert.Equal(t, expectedResultIDs, actual)
 	assert.Equal(t, nil, err)
@@ -437,18 +437,23 @@ func TestSearchRelatedEntitiesByOrgID(t *testing.T) {
 			"via": "web"
 		  }
   	]`)
+	dataBase := make(map[string]map[string]map[string]interface{}, 3)
 	organisationMap, _ := ParseJsonToMapOfMap(OrgData)
 	userMap, _ := ParseJsonToMapOfMap(usersData)
 	ticketMap, _ := ParseJsonToMapOfMap(ticketData)
-	actualResult := SearchRelatedEntities("organisation", "101", organisationMap, userMap, ticketMap)
+	dataBase[ORGANISATION] = organisationMap
+	dataBase[USER] = userMap
+	dataBase[TICKET] = ticketMap
+
+	actualResult := SearchRelatedEntities(ORGANISATION, "101", dataBase)
 	expectedNumOfRelatedUsers := 1
 	expectedNumOfRelatedTickets := 1
 	expectedUserID := "24"
 	expectedTicketID := "436bf9b0-1147-4c0a-8439-6f79833bff5b"
-	assert.Equal(t, expectedNumOfRelatedUsers, len(actualResult["user"]))
-	assert.Equal(t, expectedNumOfRelatedTickets, len(actualResult["ticket"]))
-	assert.Equal(t, expectedUserID, actualResult["user"][0])
-	assert.Equal(t, expectedTicketID, actualResult["ticket"][0])
+	assert.Equal(t, expectedNumOfRelatedUsers, len(actualResult[USER]))
+	assert.Equal(t, expectedNumOfRelatedTickets, len(actualResult[TICKET]))
+	assert.Equal(t, expectedUserID, actualResult[USER][0])
+	assert.Equal(t, expectedTicketID, actualResult[TICKET][0])
 }
 
 func TestSearchRelatedEntitiesByUserID(t *testing.T) {
@@ -550,10 +555,15 @@ func TestSearchRelatedEntitiesByUserID(t *testing.T) {
 			"via": "chat"
 		  }
   	]`)
+
+	dataBase := make(map[string]map[string]map[string]interface{}, 3)
 	organisationMap, _ := ParseJsonToMapOfMap(OrgData)
 	userMap, _ := ParseJsonToMapOfMap(usersData)
 	ticketMap, _ := ParseJsonToMapOfMap(ticketData)
-	actualResult := SearchRelatedEntities("user", "24", organisationMap, userMap, ticketMap)
+	dataBase[ORGANISATION] = organisationMap
+	dataBase[USER] = userMap
+	dataBase[TICKET] = ticketMap
+	actualResult := SearchRelatedEntities(USER, "24", dataBase)
 	expectedTicketIDs := []string{"436bf9b0-1147-4c0a-8439-6f79833bff5b", "1a227508-9f39-427c-8f57-1b72f3fab87c"}
 	assert.Equal(t, expectedTicketIDs, actualResult["ticket"])
 }

@@ -1,6 +1,8 @@
 package search
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // PrintResults prints out the search results and its related entities
 func PrintResults(table string, ids []string, dataBase map[string]map[string]map[string]interface{}) {
@@ -25,13 +27,13 @@ func PrintResults(table string, ids []string, dataBase map[string]map[string]map
 // from the other tables, it will only print out the IDs from the other tables
 func PrintRelatedEntities(table string, id string, dataBase map[string]map[string]map[string]interface{}) {
 	switch table {
-	case "organisation":
+	case ORGANISATION:
 		relatedEntities := SearchRelatedEntities(table, id, dataBase)
-		PrintEntity("user", relatedEntities)
-		PrintEntity("ticket", relatedEntities)
-	case "user":
+		PrintEntity(USER, relatedEntities)
+		PrintEntity(TICKET, relatedEntities)
+	case USER:
 		relatedEntities := SearchRelatedEntities(table, id, dataBase)
-		PrintEntity("ticket", relatedEntities)
+		PrintEntity(TICKET, relatedEntities)
 	}
 }
 

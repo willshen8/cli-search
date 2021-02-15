@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"os"
 )
 
 // ParseJsonToMapOfMap reads the data from a file and convert the result into
@@ -29,4 +30,18 @@ func ParseJsonToMapOfMap(r io.Reader) (map[string]map[string]interface{}, error)
 		result[string(fmt.Sprintf("%v", v["_id"]))] = innerMap
 	}
 	return result, nil
+}
+
+// ParseFileAndStoreInDb opens a file and store the information into the database
+func ParseFileAndStoreInDb(table string, file string, dB map[string]map[string]map[string]interface{}) (map[string]map[string]map[string]interface{}, error) {
+	openedFile, err := os.Open(file)
+	if err != nil {
+		return dB, err
+	}
+	createdMap, err := ParseJsonToMapOfMap(openedFile)
+	if err != nil {
+		return dB, err
+	}
+	dB[table] = createdMap
+	return dB, err
 }

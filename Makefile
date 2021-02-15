@@ -1,7 +1,7 @@
 all: build test lint coverage
 
 build:
-	go build -o zendesk cmd/main.go
+	go build -o zendesk cmd/main.go 
 
 test:
 	go test ./...
@@ -11,3 +11,4 @@ lint:
 
 coverage:
 	go test -coverprofile=coverage.out ./... && go tool cover -html=coverage.out
+	

@@ -11,6 +11,3 @@ var OrgMap = map[string]bool{
 	"shared_tickets": true,
 	"tags":           true,
 }
-
-// OrgSlice is a slice of all fields that is used to print the records in order
-var OrgSlice = []string{"_id", "url", "external_id", "domain_names", "created_at", "details", "shared_tickets", "tags"}

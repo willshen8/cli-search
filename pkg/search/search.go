@@ -5,18 +5,24 @@ import (
 	"sort"
 )
 
+var (
+	ORGANISATION = "organisation"
+	USER         = "user"
+	TICKET       = "ticket"
+)
+
 // search takes any table, a field name and a value and returns a slice of IDs of the records found
 func Search(m map[string]map[string]interface{}, table string, field string, value string) ([]string, error) {
 	switch table {
-	case "organisation":
+	case ORGANISATION:
 		if _, found := OrgMap[field]; !found {
 			return nil, ErrInvalidSearchField
 		}
-	case "user":
+	case USER:
 		if _, found := UserMap[field]; !found {
 			return nil, ErrInvalidSearchField
 		}
-	case "ticket":
+	case TICKET:
 		if _, found := TicketMap[field]; !found {
 			return nil, ErrInvalidSearchField
 		}
@@ -48,24 +54,24 @@ func SearchRelatedEntities(table string, id string, dataBase map[string]map[stri
 	var result = make(map[string][]string)
 	var userIds, ticketIds []string
 	switch table {
-	case "organisation":
+	case ORGANISATION:
 		for _, foreignKey := range organisationEnity.foreignKeys {
-			foundUsers, err := Search(dataBase["user"], "user", foreignKey, id) // search user table first
+			foundUsers, err := Search(dataBase[USER], USER, foreignKey, id) // search user table first
 			userIds = append(userIds, foundUsers...)
 			HandleError(err)
-			foundTickets, err := Search(dataBase["ticket"], "ticket", foreignKey, id) // then search ticket table
+			foundTickets, err := Search(dataBase[TICKET], TICKET, foreignKey, id) // then search ticket table
 			ticketIds = append(ticketIds, foundTickets...)
 			HandleError(err)
 		}
-	case "user":
+	case USER:
 		for _, foreignKey := range userEntity.foreignKeys {
-			foundTickets, err := Search(dataBase["ticket"], "ticket", foreignKey, id) // then search ticket table
+			foundTickets, err := Search(dataBase[TICKET], TICKET, foreignKey, id) // then search ticket table
 			ticketIds = append(ticketIds, foundTickets...)
 			HandleError(err)
 		}
 	}
 	// store the 3 sets of results into the result map
-	result["user"] = userIds
-	result["ticket"] = ticketIds
+	result[USER] = userIds
+	result[TICKET] = ticketIds
 	return result
 }

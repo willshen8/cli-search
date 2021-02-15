@@ -62,12 +62,31 @@ func TestParseJsonToMapOfMap(t *testing.T) {
 	assert.Equal(t, "http://initech.zendesk.com/api/v2/organizations/102.json", actual["102"]["url"])
 }
 
+func TestErrorReadingData(t *testing.T) {
+	var errorData = strings.NewReader(``)
+	_, err := ParseJsonToMapOfMap(errorData)
+	assert.NotNil(t, err)
+}
+
 func TestUnmarshallErrorData(t *testing.T) {
 	var errorData = strings.NewReader(`[
 		{
-			"_id": "101"
-		  }
+			"_id": "101",
+		}
 	]`)
 	_, err := ParseJsonToMapOfMap(errorData)
+	assert.NotNil(t, err)
+}
+
+func TestParseFileAndStoreInDbSuccess(t *testing.T) {
+	dataBase := make(map[string]map[string]map[string]interface{}, 3)
+	dataBase, err := ParseFileAndStoreInDb(ORGANISATION, "../../config/organizations.json", dataBase)
+	assert.NotEmpty(t, dataBase[ORGANISATION])
 	assert.Equal(t, nil, err)
+}
+
+func TestParseFileAndStoreInDbFail(t *testing.T) {
+	dataBase := make(map[string]map[string]map[string]interface{}, 3)
+	dataBase, err := ParseFileAndStoreInDb(ORGANISATION, "nonexistent/directory", dataBase)
+	assert.NotNil(t, err)
 }
