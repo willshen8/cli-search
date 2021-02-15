@@ -52,7 +52,13 @@ $ ./zendesk config <organisations.json> <users.json> <tickets.json>
 ```
 The order of the files matters.
 
-3. To get help, type 
+3. To list all the available fields in a table:
+
+```
+$ ./zendesk list <table>
+```
+
+4. To get help, type 
 ```
 $ ./zendesk --help
 ```
@@ -60,8 +66,6 @@ $ ./zendesk --help
 and you'll receive the following help window:
 
 ```
-usage: Zendesk-Search [<flags>] <command> [<args> ...]
-
 Welcome to Zendesk Search!
 
 Flags:
@@ -71,8 +75,11 @@ Commands:
   help [<command>...]
     Show help.
 
-  config <organisation> <user> <ticket>
+  config <organisation json file> <users json file> <tickets json file>
     Config the data source files by specifying the files you want to use.
+
+  list <table>
+    List all available data fields in a table.
 
   query <table> <field> [<value>]
     Search a specific field in a table.
@@ -80,20 +87,21 @@ Commands:
 
 <strong>Note: </strong>Optional fields are denoted by `|`. For example `value` is an optional argument, and when left blank all values will be populated back as results window.
 
-4. To run all test files
+5. To run all test files
 ```
 $ make test
 ```
 
-5. To check for code coverage
+6. To check for code coverage
 ```
 $ make coverage
 ```
-6. To all everything in one go, e.g. `build` ->  `lint` -> `test` -> `coverage`
+7. To all everything in one go, e.g. `build` ->  `lint` -> `test` -> `coverage`
 ```
 $ make all
 ```
-# Design Decisions
+## Design Decisions
+---
 
 1. Data structure:
 
@@ -117,12 +125,15 @@ As we are using map, adding additional tables is simply a matter of insert into 
 * `User`table contains two foreign keys: `submitter_id` and `assignee_id`.
 * `Ticket` table contains no foreign keys. 
 
----
-# Assumptions
+4. Use of CLI Building Library - [Kingping 2](https://github.com/alecthomas/kingpin)
+This library is simple to use and does lot of error handling when user is specifying command line arguments. It is chosen over other popular library such as `Cobra` and `urfave/cli` for its better architecture overall.
 
+## Assumptions
+---
 1. `external_id` field appears to be linked to external system and bears no relationship with other tables.
 
-# Limitations
-
+## Limitations
+---
 1. The size of the database is depend on the hardware or the max size of the heap, as it is implemented using `map`.
 2. Use the `config` command option to specify the source data files, the order matters. Due to time constraint I have not implemented checks to ensure the right files are specified.
+3. As `map` is used, the order of the fields when printing data is not guaranteed, this can be easily achieved by using a look up table/slice. But due to time constraint, it is treated as a `non-important feature` and not implemented. 

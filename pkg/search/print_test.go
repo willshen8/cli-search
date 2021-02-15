@@ -22,6 +22,27 @@ func TestPrintResultsUsingOrgTable(t *testing.T) {
 	assert.NotEmpty(t, actual)
 }
 
+func TestPrintAllAvailableFieldsInOrgTable(t *testing.T) {
+	actual := captureOutput(func() {
+		PrintAllAvailableFields(ORGANISATION)
+	})
+	assert.NotEmpty(t, actual)
+}
+
+func TestPrintAllAvailableFieldsInUserTable(t *testing.T) {
+	actual := captureOutput(func() {
+		PrintAllAvailableFields(USER)
+	})
+	assert.NotEmpty(t, actual)
+}
+
+func TestPrintAllAvailableFieldsInTicketTable(t *testing.T) {
+	actual := captureOutput(func() {
+		PrintAllAvailableFields(TICKET)
+	})
+	assert.NotEmpty(t, actual)
+}
+
 func TestPrintResultsWithUserTable(t *testing.T) {
 	dB := SetupTest()
 	id := []string{"1"}
@@ -32,6 +53,7 @@ func TestPrintResultsWithUserTable(t *testing.T) {
 	assert.NotEmpty(t, actual)
 }
 
+// captureOutput is a test utility function that captures the output to standardout
 func captureOutput(f func()) string {
 	reader, writer, err := os.Pipe()
 	if err != nil {
@@ -168,8 +190,8 @@ func SetupTest() map[string]map[string]map[string]interface{} {
 	organisationMap, _ := ParseJsonToMapOfMap(orgData)
 	userMap, _ := ParseJsonToMapOfMap(usersData)
 	ticketsMap, _ := ParseJsonToMapOfMap(ticketData)
-	dataBase["organisation"] = organisationMap
-	dataBase["user"] = userMap
-	dataBase["ticket"] = ticketsMap
+	dataBase[ORGANISATION] = organisationMap
+	dataBase[USER] = userMap
+	dataBase[TICKET] = ticketsMap
 	return dataBase
 }

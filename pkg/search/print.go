@@ -42,6 +42,26 @@ func PrintRelatedEntities(table string, id string, dataBase map[string]map[strin
 func PrintEntity(table string, m map[string][]string) {
 	fmt.Println("-------------------------- Related ", table, "--------------------------")
 	for i, v := range m[table] {
-		fmt.Printf("Result %-1v ID: %-20v\n", i+1, v)
+		fmt.Printf("Result %-1v: _id = %-20v\n", i+1, v)
 	}
+}
+
+// PrintAllAvailableFields prints all the available fields in a table
+func PrintAllAvailableFields(table string) {
+	fmt.Println("---------------------- Available fields in ", table, "----------------------")
+	switch table {
+	case ORGANISATION:
+		for i, v := range OrgFields {
+			fmt.Printf("%v: %-0v\n", i+1, v)
+		}
+	case USER:
+		for i, v := range UserFields {
+			fmt.Printf("%v: %-0v\n", i+1, v)
+		}
+	case TICKET:
+		for i, v := range TicketFields {
+			fmt.Printf("%v: %-0v\n", i+1, v)
+		}
+	}
+	fmt.Println("---------------------------- End of the list ----------------------------")
 }

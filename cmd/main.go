@@ -20,6 +20,9 @@ var (
 	configUserJsonFile   = config.Arg("users json file", "User json file.").Required().String()
 	configTicketJsonFile = config.Arg("tickets json file", "Ticket json file.").Required().String()
 
+	list      = app.Command("list", "List all available data fields in a table.")
+	listTable = list.Arg("table", "(Required) Name of the table [organsaition|user|ticket].").Required().String()
+
 	// query is a command that user uses to query a table
 	query      = app.Command("query", "Search a specific field in a table.")
 	queryTable = query.Arg("table", "(Required) Name of the table.").Required().String()
@@ -39,6 +42,9 @@ func main() {
 		search.HandleError(err)
 		err = search.CopyFile(*configTicketJsonFile, defaultTicketsFile)
 		search.HandleError(err)
+
+	case list.FullCommand():
+		search.PrintAllAvailableFields(*listTable)
 
 	// Process search command
 	case query.FullCommand():

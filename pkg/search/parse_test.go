@@ -87,6 +87,6 @@ func TestParseFileAndStoreInDbSuccess(t *testing.T) {
 
 func TestParseFileAndStoreInDbFail(t *testing.T) {
 	dataBase := make(map[string]map[string]map[string]interface{}, 3)
-	dataBase, err := ParseFileAndStoreInDb(ORGANISATION, "nonexistent/directory", dataBase)
+	_, err := ParseFileAndStoreInDb(ORGANISATION, "nonexistent/directory", dataBase)
 	assert.NotNil(t, err)
 }

@@ -11,3 +11,6 @@ var OrgMap = map[string]bool{
 	"shared_tickets": true,
 	"tags":           true,
 }
+
+// OrgFields is used to print all the available fields
+var OrgFields = []string{"_id", "url", "external_id", "domain_names", "created_at", "details", "shared_tickets", "tags"}
