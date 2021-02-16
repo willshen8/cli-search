@@ -1,4 +1,4 @@
-module github.com/willshen8/zendesk-coding-challenge
+module github.com/willshen8/cli-search
 
 go 1.13
 

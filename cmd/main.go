@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/willshen8/zendesk-coding-challenge/pkg/search"
+	"github.com/willshen8/cli-search/pkg/search"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 

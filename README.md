@@ -1,4 +1,5 @@
-# Zendesk Coding Challenge
+# CLI Search
+This CLI program will take json files as input and allow you to search any fields via CLI.
 
 * [Installation Guide](#installation)
 * [User Guide](#run-the-program)
@@ -13,13 +14,13 @@
 2. Clone the project into your desired directory:
 
 ```
-$ git clone https://github.com/willshen8/zendesk-coding-challenge.git zendesk
+$ git clone https://github.com/willshen8/cli-search.git cli-search
 ```
 
 3. cd into the cloned directory:
 
 ```
-$ cd zendesk
+$ cd cli-search
 ```
 
 4. Build the executable
@@ -29,44 +30,44 @@ A Makefile is already created for you and you can simple run
 make build
 ```
 
-and then an executable called `zendesk` is created at the root level of your cloned directory.
+and then an executable called `cli-search` is created at the root level of your cloned directory.
 
 ---
 ## Run the program
 
 1. To start search run the following command:
 ```
-$ ./zendesk query organisation _id 101
+$ ./cli-search query organisation _id 101
 ```
 
 where the command follow the convention of 
 ```
-$ ./zendesk query <table> <field> <value>
+$ ./cli-search query <table> <field> <value>
 
 ```
 2. Configuration files:
 The 3 JSON files are stored in the `config` directory by default. To specify the data source you wish to use, use the following command:
 
 ```
-$ ./zendesk config <organisations.json> <users.json> <tickets.json>
+$ ./cli-search config <organisations.json> <users.json> <tickets.json>
 ```
 The order of the files matters.
 
 3. To list all the available fields in a table:
 
 ```
-$ ./zendesk list <table>
+$ ./cli-search list <table>
 ```
 
 4. To get help, type 
 ```
-$ ./zendesk --help
+$ ./cli-search --help
 ```
 
 and you'll receive the following help window:
 
 ```
-Welcome to Zendesk Search!
+Welcome to cli-search!
 
 Flags:
   --help  Show context-sensitive help (also try --help-long and --help-man).
