@@ -1,10 +1,11 @@
-package search
+package file
 
 import (
 	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/willshen8/cli-search/pkg/search"
 )
 
 func TestParseJsonToMapOfMap(t *testing.T) {
@@ -80,13 +81,13 @@ func TestUnmarshallErrorData(t *testing.T) {
 
 func TestParseFileAndStoreInDbSuccess(t *testing.T) {
 	dataBase := make(map[string]map[string]map[string]interface{}, 3)
-	dataBase, err := ParseFileAndStoreInDb(ORGANISATION, "../../config/organizations.json", dataBase)
-	assert.NotEmpty(t, dataBase[ORGANISATION])
+	dataBase, err := ParseFileAndStoreInDb(search.ORGANISATION, "../../config/organizations.json", dataBase)
+	assert.NotEmpty(t, dataBase[search.ORGANISATION])
 	assert.Equal(t, nil, err)
 }
 
 func TestParseFileAndStoreInDbFail(t *testing.T) {
 	dataBase := make(map[string]map[string]map[string]interface{}, 3)
-	_, err := ParseFileAndStoreInDb(ORGANISATION, "nonexistent/directory", dataBase)
+	_, err := ParseFileAndStoreInDb(search.ORGANISATION, "nonexistent/directory", dataBase)
 	assert.NotNil(t, err)
 }

@@ -3,13 +3,15 @@ package main
 import (
 	"os"
 
+	"github.com/willshen8/cli-search/pkg/file"
+	"github.com/willshen8/cli-search/pkg/print"
 	"github.com/willshen8/cli-search/pkg/search"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
 	args               = os.Args[1:]
-	app                = kingpin.New("Zendesk-Search", "Welcome to Zendesk Search!")
+	app                = kingpin.New("CLI-Search", "Welcome to CLI Search!")
 	defaultOrgFile     = "config/organizations.json"
 	defaultUsersFile   = "config/users.json"
 	defaultTicketsFile = "config/tickets.json"
@@ -36,26 +38,26 @@ func main() {
 	switch kingpin.MustParse(app.Parse(args)) {
 	// Process config command
 	case config.FullCommand():
-		err := search.CopyFile(*configOrgJsonFile, defaultOrgFile)
+		err := file.CopyFile(*configOrgJsonFile, defaultOrgFile)
 		search.HandleError(err)
-		err = search.CopyFile(*configUserJsonFile, defaultUsersFile)
+		err = file.CopyFile(*configUserJsonFile, defaultUsersFile)
 		search.HandleError(err)
-		err = search.CopyFile(*configTicketJsonFile, defaultTicketsFile)
+		err = file.CopyFile(*configTicketJsonFile, defaultTicketsFile)
 		search.HandleError(err)
 
 	case list.FullCommand():
-		search.PrintAllAvailableFields(*listTable)
+		print.PrintAllAvailableFields(*listTable)
 
 	// Process search command
 	case query.FullCommand():
-		dataBase, err := search.ParseFileAndStoreInDb(search.ORGANISATION, defaultOrgFile, dataBase)
+		dataBase, err := file.ParseFileAndStoreInDb(search.ORGANISATION, defaultOrgFile, dataBase)
 		search.HandleError(err)
-		dataBase, err = search.ParseFileAndStoreInDb(search.USER, defaultUsersFile, dataBase)
+		dataBase, err = file.ParseFileAndStoreInDb(search.USER, defaultUsersFile, dataBase)
 		search.HandleError(err)
-		dataBase, err = search.ParseFileAndStoreInDb(search.TICKET, defaultTicketsFile, dataBase)
+		dataBase, err = file.ParseFileAndStoreInDb(search.TICKET, defaultTicketsFile, dataBase)
 		search.HandleError(err)
 		searchResults, err := search.Search(dataBase[*queryTable], *queryTable, *queryField, *queryValue)
 		search.HandleError(err)
-		search.PrintResults(*queryTable, searchResults, dataBase)
+		print.PrintResults(*queryTable, searchResults, dataBase)
 	}
 }

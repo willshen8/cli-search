@@ -1,7 +1,9 @@
-package search
+package print
 
 import (
 	"fmt"
+
+	"github.com/willshen8/cli-search/pkg/search"
 )
 
 // PrintResults prints out the search results and its related entities
@@ -27,13 +29,13 @@ func PrintResults(table string, ids []string, dataBase map[string]map[string]map
 // from the other tables, it will only print out the IDs from the other tables
 func PrintRelatedEntities(table string, id string, dataBase map[string]map[string]map[string]interface{}) {
 	switch table {
-	case ORGANISATION:
-		relatedEntities := SearchRelatedEntities(table, id, dataBase)
-		PrintEntity(USER, relatedEntities)
-		PrintEntity(TICKET, relatedEntities)
-	case USER:
-		relatedEntities := SearchRelatedEntities(table, id, dataBase)
-		PrintEntity(TICKET, relatedEntities)
+	case search.ORGANISATION:
+		relatedEntities := search.SearchRelatedEntities(table, id, dataBase)
+		PrintEntity(search.USER, relatedEntities)
+		PrintEntity(search.TICKET, relatedEntities)
+	case search.USER:
+		relatedEntities := search.SearchRelatedEntities(table, id, dataBase)
+		PrintEntity(search.TICKET, relatedEntities)
 	}
 }
 
@@ -50,16 +52,16 @@ func PrintEntity(table string, m map[string][]string) {
 func PrintAllAvailableFields(table string) {
 	fmt.Println("---------------------- Available fields in ", table, "----------------------")
 	switch table {
-	case ORGANISATION:
-		for i, v := range OrgFields {
+	case search.ORGANISATION:
+		for i, v := range search.OrgFields {
 			fmt.Printf("%v: %-0v\n", i+1, v)
 		}
-	case USER:
-		for i, v := range UserFields {
+	case search.USER:
+		for i, v := range search.UserFields {
 			fmt.Printf("%v: %-0v\n", i+1, v)
 		}
-	case TICKET:
-		for i, v := range TicketFields {
+	case search.TICKET:
+		for i, v := range search.TicketFields {
 			fmt.Printf("%v: %-0v\n", i+1, v)
 		}
 	}

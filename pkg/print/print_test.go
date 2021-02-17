@@ -1,4 +1,4 @@
-package search
+package print
 
 import (
 	"bytes"
@@ -10,6 +10,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/willshen8/cli-search/pkg/file"
+	"github.com/willshen8/cli-search/pkg/search"
 )
 
 func TestPrintResultsUsingOrgTable(t *testing.T) {
@@ -17,28 +19,28 @@ func TestPrintResultsUsingOrgTable(t *testing.T) {
 	id := []string{"101"}
 
 	actual := captureOutput(func() {
-		PrintResults(ORGANISATION, id, dB)
+		PrintResults(search.ORGANISATION, id, dB)
 	})
 	assert.NotEmpty(t, actual)
 }
 
 func TestPrintAllAvailableFieldsInOrgTable(t *testing.T) {
 	actual := captureOutput(func() {
-		PrintAllAvailableFields(ORGANISATION)
+		PrintAllAvailableFields(search.ORGANISATION)
 	})
 	assert.NotEmpty(t, actual)
 }
 
 func TestPrintAllAvailableFieldsInUserTable(t *testing.T) {
 	actual := captureOutput(func() {
-		PrintAllAvailableFields(USER)
+		PrintAllAvailableFields(search.USER)
 	})
 	assert.NotEmpty(t, actual)
 }
 
 func TestPrintAllAvailableFieldsInTicketTable(t *testing.T) {
 	actual := captureOutput(func() {
-		PrintAllAvailableFields(TICKET)
+		PrintAllAvailableFields(search.TICKET)
 	})
 	assert.NotEmpty(t, actual)
 }
@@ -48,7 +50,7 @@ func TestPrintResultsWithUserTable(t *testing.T) {
 	id := []string{"1"}
 
 	actual := captureOutput(func() {
-		PrintResults(USER, id, dB)
+		PrintResults(search.USER, id, dB)
 	})
 	assert.NotEmpty(t, actual)
 }
@@ -187,11 +189,11 @@ func SetupTest() map[string]map[string]map[string]interface{} {
   	]`)
 
 	dataBase := make(map[string]map[string]map[string]interface{}, 3)
-	organisationMap, _ := ParseJsonToMapOfMap(orgData)
-	userMap, _ := ParseJsonToMapOfMap(usersData)
-	ticketsMap, _ := ParseJsonToMapOfMap(ticketData)
-	dataBase[ORGANISATION] = organisationMap
-	dataBase[USER] = userMap
-	dataBase[TICKET] = ticketsMap
+	organisationMap, _ := file.ParseJsonToMapOfMap(orgData)
+	userMap, _ := file.ParseJsonToMapOfMap(usersData)
+	ticketsMap, _ := file.ParseJsonToMapOfMap(ticketData)
+	dataBase[search.ORGANISATION] = organisationMap
+	dataBase[search.USER] = userMap
+	dataBase[search.TICKET] = ticketsMap
 	return dataBase
 }

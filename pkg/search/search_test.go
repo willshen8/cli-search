@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/willshen8/cli-search/pkg/file"
 )
 
 func TestSearchSuccess(t *testing.T) {
@@ -52,7 +53,7 @@ func TestSearchSuccess(t *testing.T) {
 	  ]
 	}
   ]`)
-	organisationMap, err := ParseJsonToMapOfMap(testData)
+	organisationMap, err := file.ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(organisationMap, ORGANISATION, "external_id", "9270ed79-35eb-4a38-a46f-35725197ea8d")
 	var expectedResultID = []string{"101"}
@@ -86,7 +87,7 @@ func TestSearchTicketTableSuccess(t *testing.T) {
 			"via": "web"
 		}
 	  ]`)
-	ticketsMap, err := ParseJsonToMapOfMap(testTicketData)
+	ticketsMap, err := file.ParseJsonToMapOfMap(testTicketData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(ticketsMap, "ticket", "submitter_id", "38")
 	expectedResult := []string{"436bf9b0-1147-4c0a-8439-6f79833bff5b"}
@@ -120,7 +121,7 @@ func TestSearchInvalidFieldInTicketsTable(t *testing.T) {
 			"via": "web"
 		}
 	  ]`)
-	ticketsMap, err := ParseJsonToMapOfMap(testTicketData)
+	ticketsMap, err := file.ParseJsonToMapOfMap(testTicketData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(ticketsMap, "ticket", "invalidField", "101")
 	expectedResult := []string(nil)
@@ -158,7 +159,7 @@ func TestSearchInvalidFieldInOrgTable(t *testing.T) {
 			"role": "admin"
 		}
   ]`)
-	userMap, err := ParseJsonToMapOfMap(testData)
+	userMap, err := file.ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(userMap, "user", "invalidField", "")
 	expectedResult := []string(nil)
@@ -191,7 +192,7 @@ func TestSearchInvalidFieldInTicketTable(t *testing.T) {
 	  ]
 	}
   ]`)
-	organisationMap, err := ParseJsonToMapOfMap(testData)
+	organisationMap, err := file.ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(organisationMap, ORGANISATION, "invalidField", "")
 	expectedResult := []string(nil)
@@ -223,7 +224,7 @@ func TestSearchByID(t *testing.T) {
 	  ]
 	}
   ]`)
-	organisationMap, err := ParseJsonToMapOfMap(testData)
+	organisationMap, err := file.ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(organisationMap, ORGANISATION, "_id", "101")
 	var expectedResultID = []string{"101"}
@@ -255,7 +256,7 @@ func TestSearchByEachField(t *testing.T) {
 	  ]
 	}
   ]`)
-	organisationMap, err := ParseJsonToMapOfMap(testData)
+	organisationMap, err := file.ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
 	for key := range OrgMap {
 		actual, err := Search(organisationMap, ORGANISATION, key, "")
@@ -310,7 +311,7 @@ func TestSearchWithoutSpecifiedValue(t *testing.T) {
 	  ]
 	}
   ]`)
-	organisationMap, err := ParseJsonToMapOfMap(testData)
+	organisationMap, err := file.ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(organisationMap, ORGANISATION, "external_id", "")
 	var expectedResultIDs = []string{"101", "102"}
@@ -347,7 +348,7 @@ func TestSearchUserTable(t *testing.T) {
 			"role": "admin"
 		}
   ]`)
-	usersMap, err := ParseJsonToMapOfMap(usersData)
+	usersMap, err := file.ParseJsonToMapOfMap(usersData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(usersMap, "user", "active", "true")
 	expectedResults := []string{"1"}
@@ -438,9 +439,9 @@ func TestSearchRelatedEntitiesByOrgID(t *testing.T) {
 		  }
   	]`)
 	dataBase := make(map[string]map[string]map[string]interface{}, 3)
-	organisationMap, _ := ParseJsonToMapOfMap(OrgData)
-	userMap, _ := ParseJsonToMapOfMap(usersData)
-	ticketMap, _ := ParseJsonToMapOfMap(ticketData)
+	organisationMap, _ := file.ParseJsonToMapOfMap(OrgData)
+	userMap, _ := file.ParseJsonToMapOfMap(usersData)
+	ticketMap, _ := file.ParseJsonToMapOfMap(ticketData)
 	dataBase[ORGANISATION] = organisationMap
 	dataBase[USER] = userMap
 	dataBase[TICKET] = ticketMap
@@ -557,9 +558,9 @@ func TestSearchRelatedEntitiesByUserID(t *testing.T) {
   	]`)
 
 	dataBase := make(map[string]map[string]map[string]interface{}, 3)
-	organisationMap, _ := ParseJsonToMapOfMap(OrgData)
-	userMap, _ := ParseJsonToMapOfMap(usersData)
-	ticketMap, _ := ParseJsonToMapOfMap(ticketData)
+	organisationMap, _ := file.ParseJsonToMapOfMap(OrgData)
+	userMap, _ := file.ParseJsonToMapOfMap(usersData)
+	ticketMap, _ := file.ParseJsonToMapOfMap(ticketData)
 	dataBase[ORGANISATION] = organisationMap
 	dataBase[USER] = userMap
 	dataBase[TICKET] = ticketMap

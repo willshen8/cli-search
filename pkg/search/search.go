@@ -3,6 +3,8 @@ package search
 import (
 	"fmt"
 	"sort"
+
+	"github.com/willshen8/cli-search/pkg/entity"
 )
 
 var (
@@ -55,7 +57,7 @@ func SearchRelatedEntities(table string, id string, dataBase map[string]map[stri
 	var userIds, ticketIds []string
 	switch table {
 	case ORGANISATION:
-		for _, foreignKey := range organisationEnity.foreignKeys {
+		for _, foreignKey := range entity.OrganisationEnity.ForeignKeys {
 			foundUsers, err := Search(dataBase[USER], USER, foreignKey, id) // search user table first
 			userIds = append(userIds, foundUsers...)
 			HandleError(err)
@@ -64,7 +66,7 @@ func SearchRelatedEntities(table string, id string, dataBase map[string]map[stri
 			HandleError(err)
 		}
 	case USER:
-		for _, foreignKey := range userEntity.foreignKeys {
+		for _, foreignKey := range entity.UserEntity.ForeignKeys {
 			foundTickets, err := Search(dataBase[TICKET], TICKET, foreignKey, id) // then search ticket table
 			ticketIds = append(ticketIds, foundTickets...)
 			HandleError(err)

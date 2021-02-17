@@ -1,4 +1,4 @@
-package search
+package file
 
 import (
 	"encoding/json"
@@ -7,6 +7,14 @@ import (
 	"io/ioutil"
 	"os"
 )
+
+func ReadJsonFile(r io.Reader) ([]byte, error) {
+	data, err := ioutil.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
 
 // ParseJsonToMapOfMap reads the data from a file and convert the result into
 // a map of maps for efficient search
