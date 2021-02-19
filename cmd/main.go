@@ -3,7 +3,9 @@ package main
 import (
 	"os"
 
-	"github.com/willshen8/cli-search/pkg/file"
+	"github.com/willshen8/cli-search/internal/copy"
+	"github.com/willshen8/cli-search/internal/errors"
+	"github.com/willshen8/cli-search/pkg/parser"
 	"github.com/willshen8/cli-search/pkg/print"
 	"github.com/willshen8/cli-search/pkg/search"
 	"gopkg.in/alecthomas/kingpin.v2"
@@ -38,26 +40,26 @@ func main() {
 	switch kingpin.MustParse(app.Parse(args)) {
 	// Process config command
 	case config.FullCommand():
-		err := file.CopyFile(*configOrgJsonFile, defaultOrgFile)
-		search.HandleError(err)
-		err = file.CopyFile(*configUserJsonFile, defaultUsersFile)
-		search.HandleError(err)
-		err = file.CopyFile(*configTicketJsonFile, defaultTicketsFile)
-		search.HandleError(err)
+		err := copy.CopyFile(*configOrgJsonFile, defaultOrgFile)
+		errors.HandleError(err)
+		err = copy.CopyFile(*configUserJsonFile, defaultUsersFile)
+		errors.HandleError(err)
+		err = copy.CopyFile(*configTicketJsonFile, defaultTicketsFile)
+		errors.HandleError(err)
 
 	case list.FullCommand():
 		print.PrintAllAvailableFields(*listTable)
 
 	// Process search command
 	case query.FullCommand():
-		dataBase, err := file.ParseFileAndStoreInDb(search.ORGANISATION, defaultOrgFile, dataBase)
-		search.HandleError(err)
-		dataBase, err = file.ParseFileAndStoreInDb(search.USER, defaultUsersFile, dataBase)
-		search.HandleError(err)
-		dataBase, err = file.ParseFileAndStoreInDb(search.TICKET, defaultTicketsFile, dataBase)
-		search.HandleError(err)
+		dataBase, err := parser.ParseFileAndStoreInDb(search.ORGANISATION, defaultOrgFile, dataBase)
+		errors.HandleError(err)
+		dataBase, err = parser.ParseFileAndStoreInDb(search.USER, defaultUsersFile, dataBase)
+		errors.HandleError(err)
+		dataBase, err = parser.ParseFileAndStoreInDb(search.TICKET, defaultTicketsFile, dataBase)
+		errors.HandleError(err)
 		searchResults, err := search.Search(dataBase[*queryTable], *queryTable, *queryField, *queryValue)
-		search.HandleError(err)
+		errors.HandleError(err)
 		print.PrintResults(*queryTable, searchResults, dataBase)
 	}
 }

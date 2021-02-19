@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/willshen8/cli-search/pkg/entity"
+	"github.com/willshen8/cli-search/internal/errors"
+	"github.com/willshen8/cli-search/pkg/db"
 )
 
 var (
@@ -18,18 +19,18 @@ func Search(m map[string]map[string]interface{}, table string, field string, val
 	switch table {
 	case ORGANISATION:
 		if _, found := OrgMap[field]; !found {
-			return nil, ErrInvalidSearchField
+			return nil, errors.NewError(errors.ErrInvalidSearchField, field)
 		}
 	case USER:
 		if _, found := UserMap[field]; !found {
-			return nil, ErrInvalidSearchField
+			return nil, errors.NewError(errors.ErrInvalidSearchField, field)
 		}
 	case TICKET:
 		if _, found := TicketMap[field]; !found {
-			return nil, ErrInvalidSearchField
+			return nil, errors.NewError(errors.ErrInvalidSearchField, field)
 		}
 	default:
-		return nil, ErrInvalidTable
+		return nil, errors.NewError(errors.ErrInvalidTable, table)
 	}
 
 	var result []string
@@ -57,19 +58,19 @@ func SearchRelatedEntities(table string, id string, dataBase map[string]map[stri
 	var userIds, ticketIds []string
 	switch table {
 	case ORGANISATION:
-		for _, foreignKey := range entity.OrganisationEnity.ForeignKeys {
+		for _, foreignKey := range db.OrganisationEnity.ForeignKeys {
 			foundUsers, err := Search(dataBase[USER], USER, foreignKey, id) // search user table first
 			userIds = append(userIds, foundUsers...)
-			HandleError(err)
+			errors.HandleError(err)
 			foundTickets, err := Search(dataBase[TICKET], TICKET, foreignKey, id) // then search ticket table
 			ticketIds = append(ticketIds, foundTickets...)
-			HandleError(err)
+			errors.HandleError(err)
 		}
 	case USER:
-		for _, foreignKey := range entity.UserEntity.ForeignKeys {
+		for _, foreignKey := range db.UserEntity.ForeignKeys {
 			foundTickets, err := Search(dataBase[TICKET], TICKET, foreignKey, id) // then search ticket table
 			ticketIds = append(ticketIds, foundTickets...)
-			HandleError(err)
+			errors.HandleError(err)
 		}
 	}
 	// store the 3 sets of results into the result map

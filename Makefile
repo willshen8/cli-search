@@ -12,3 +12,8 @@ lint:
 coverage:
 	go test -coverprofile=coverage.out ./... && go tool cover -html=coverage.out
 	
+.PHONY: clean
+
+clean:
+	go clean
+	rm -f ./cli-search

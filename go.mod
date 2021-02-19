@@ -8,6 +8,7 @@ require (
 	github.com/alecthomas/repr v0.0.0-20201120212035-bb82daffcca2 // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751 // indirect
 	github.com/alecthomas/units v0.0.0-20210208195552-ff826a37aa15 // indirect
+	github.com/coreos/etcd v3.3.25+incompatible
 	github.com/mattn/go-isatty v0.0.12 // indirect
 	github.com/n-marshall/go-cp v0.0.0-20180115193924-61436d3b7cfa
 	github.com/prometheus/common v0.15.0

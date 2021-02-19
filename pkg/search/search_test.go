@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/willshen8/cli-search/pkg/file"
+	"github.com/willshen8/cli-search/pkg/util"
 )
 
 func TestSearchSuccess(t *testing.T) {
@@ -125,7 +126,7 @@ func TestSearchInvalidFieldInTicketsTable(t *testing.T) {
 	assert.Equal(t, nil, err)
 	actual, err := Search(ticketsMap, "ticket", "invalidField", "101")
 	expectedResult := []string(nil)
-	expectedErr := ErrInvalidSearchField
+	expectedErr := util.ErrInvalidSearchField
 	assert.Equal(t, expectedResult, actual)
 	assert.Equal(t, expectedErr, err)
 }
@@ -163,7 +164,7 @@ func TestSearchInvalidFieldInOrgTable(t *testing.T) {
 	assert.Equal(t, nil, err)
 	actual, err := Search(userMap, "user", "invalidField", "")
 	expectedResult := []string(nil)
-	expectedErr := ErrInvalidSearchField
+	expectedErr := util.ErrInvalidSearchField
 	assert.Equal(t, expectedResult, actual)
 	assert.Equal(t, expectedErr, err)
 }
@@ -196,7 +197,7 @@ func TestSearchInvalidFieldInTicketTable(t *testing.T) {
 	assert.Equal(t, nil, err)
 	actual, err := Search(organisationMap, ORGANISATION, "invalidField", "")
 	expectedResult := []string(nil)
-	expectedErr := ErrInvalidSearchField
+	expectedErr := util.ErrInvalidSearchField
 	assert.Equal(t, expectedResult, actual)
 	assert.Equal(t, expectedErr, err)
 }
