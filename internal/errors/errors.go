@@ -22,7 +22,7 @@ type Error struct {
 
 // Error methods implements the error interface method by printing out the actual error
 func (e *Error) Error() string {
-	return fmt.Sprintf("%s: %v", e.Context, e.Err)
+	return fmt.Sprintf("%v %s", e.Err, e.Context)
 }
 
 // NewError creates a new error
@@ -34,6 +34,6 @@ func NewError(err error, info string, args ...interface{}) *Error {
 }
 
 var (
-	ErrInvalidTable       = errors.New("You have specified an incorrect table: ")
-	ErrInvalidSearchField = errors.New("Invalid search field: ")
+	ErrInvalidTable       = errors.New("You have specified an incorrect table:")
+	ErrInvalidSearchField = errors.New("Invalid search field:")
 )

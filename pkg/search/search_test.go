@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/willshen8/cli-search/pkg/file"
-	"github.com/willshen8/cli-search/pkg/util"
+	"github.com/willshen8/cli-search/internal/errors"
+	"github.com/willshen8/cli-search/pkg/parser"
 )
 
 func TestSearchSuccess(t *testing.T) {
@@ -54,7 +54,7 @@ func TestSearchSuccess(t *testing.T) {
 	  ]
 	}
   ]`)
-	organisationMap, err := file.ParseJsonToMapOfMap(testData)
+	organisationMap, err := parser.ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(organisationMap, ORGANISATION, "external_id", "9270ed79-35eb-4a38-a46f-35725197ea8d")
 	var expectedResultID = []string{"101"}
@@ -88,7 +88,7 @@ func TestSearchTicketTableSuccess(t *testing.T) {
 			"via": "web"
 		}
 	  ]`)
-	ticketsMap, err := file.ParseJsonToMapOfMap(testTicketData)
+	ticketsMap, err := parser.ParseJsonToMapOfMap(testTicketData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(ticketsMap, "ticket", "submitter_id", "38")
 	expectedResult := []string{"436bf9b0-1147-4c0a-8439-6f79833bff5b"}
@@ -122,13 +122,13 @@ func TestSearchInvalidFieldInTicketsTable(t *testing.T) {
 			"via": "web"
 		}
 	  ]`)
-	ticketsMap, err := file.ParseJsonToMapOfMap(testTicketData)
+	ticketsMap, err := parser.ParseJsonToMapOfMap(testTicketData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(ticketsMap, "ticket", "invalidField", "101")
 	expectedResult := []string(nil)
-	expectedErr := util.ErrInvalidSearchField
+	expectedErr := errors.NewError(errors.ErrInvalidSearchField, "invalidField").Error()
 	assert.Equal(t, expectedResult, actual)
-	assert.Equal(t, expectedErr, err)
+	assert.Equal(t, expectedErr, err.Error())
 }
 
 func TestSearchInvalidFieldInOrgTable(t *testing.T) {
@@ -160,13 +160,13 @@ func TestSearchInvalidFieldInOrgTable(t *testing.T) {
 			"role": "admin"
 		}
   ]`)
-	userMap, err := file.ParseJsonToMapOfMap(testData)
+	userMap, err := parser.ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(userMap, "user", "invalidField", "")
 	expectedResult := []string(nil)
-	expectedErr := util.ErrInvalidSearchField
+	expectedErr := errors.NewError(errors.ErrInvalidSearchField, "invalidField").Error()
 	assert.Equal(t, expectedResult, actual)
-	assert.Equal(t, expectedErr, err)
+	assert.Equal(t, expectedErr, err.Error())
 }
 
 func TestSearchInvalidFieldInTicketTable(t *testing.T) {
@@ -193,13 +193,13 @@ func TestSearchInvalidFieldInTicketTable(t *testing.T) {
 	  ]
 	}
   ]`)
-	organisationMap, err := file.ParseJsonToMapOfMap(testData)
+	organisationMap, err := parser.ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(organisationMap, ORGANISATION, "invalidField", "")
 	expectedResult := []string(nil)
-	expectedErr := util.ErrInvalidSearchField
+	expectedErr := errors.NewError(errors.ErrInvalidSearchField, "invalidField").Error()
 	assert.Equal(t, expectedResult, actual)
-	assert.Equal(t, expectedErr, err)
+	assert.Equal(t, expectedErr, err.Error())
 }
 func TestSearchByID(t *testing.T) {
 	var testData = strings.NewReader(`[
@@ -225,7 +225,7 @@ func TestSearchByID(t *testing.T) {
 	  ]
 	}
   ]`)
-	organisationMap, err := file.ParseJsonToMapOfMap(testData)
+	organisationMap, err := parser.ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(organisationMap, ORGANISATION, "_id", "101")
 	var expectedResultID = []string{"101"}
@@ -257,7 +257,7 @@ func TestSearchByEachField(t *testing.T) {
 	  ]
 	}
   ]`)
-	organisationMap, err := file.ParseJsonToMapOfMap(testData)
+	organisationMap, err := parser.ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
 	for key := range OrgMap {
 		actual, err := Search(organisationMap, ORGANISATION, key, "")
@@ -312,7 +312,7 @@ func TestSearchWithoutSpecifiedValue(t *testing.T) {
 	  ]
 	}
   ]`)
-	organisationMap, err := file.ParseJsonToMapOfMap(testData)
+	organisationMap, err := parser.ParseJsonToMapOfMap(testData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(organisationMap, ORGANISATION, "external_id", "")
 	var expectedResultIDs = []string{"101", "102"}
@@ -349,7 +349,7 @@ func TestSearchUserTable(t *testing.T) {
 			"role": "admin"
 		}
   ]`)
-	usersMap, err := file.ParseJsonToMapOfMap(usersData)
+	usersMap, err := parser.ParseJsonToMapOfMap(usersData)
 	assert.Equal(t, nil, err)
 	actual, err := Search(usersMap, "user", "active", "true")
 	expectedResults := []string{"1"}
@@ -440,9 +440,9 @@ func TestSearchRelatedEntitiesByOrgID(t *testing.T) {
 		  }
   	]`)
 	dataBase := make(map[string]map[string]map[string]interface{}, 3)
-	organisationMap, _ := file.ParseJsonToMapOfMap(OrgData)
-	userMap, _ := file.ParseJsonToMapOfMap(usersData)
-	ticketMap, _ := file.ParseJsonToMapOfMap(ticketData)
+	organisationMap, _ := parser.ParseJsonToMapOfMap(OrgData)
+	userMap, _ := parser.ParseJsonToMapOfMap(usersData)
+	ticketMap, _ := parser.ParseJsonToMapOfMap(ticketData)
 	dataBase[ORGANISATION] = organisationMap
 	dataBase[USER] = userMap
 	dataBase[TICKET] = ticketMap
@@ -559,9 +559,9 @@ func TestSearchRelatedEntitiesByUserID(t *testing.T) {
   	]`)
 
 	dataBase := make(map[string]map[string]map[string]interface{}, 3)
-	organisationMap, _ := file.ParseJsonToMapOfMap(OrgData)
-	userMap, _ := file.ParseJsonToMapOfMap(usersData)
-	ticketMap, _ := file.ParseJsonToMapOfMap(ticketData)
+	organisationMap, _ := parser.ParseJsonToMapOfMap(OrgData)
+	userMap, _ := parser.ParseJsonToMapOfMap(usersData)
+	ticketMap, _ := parser.ParseJsonToMapOfMap(ticketData)
 	dataBase[ORGANISATION] = organisationMap
 	dataBase[USER] = userMap
 	dataBase[TICKET] = ticketMap

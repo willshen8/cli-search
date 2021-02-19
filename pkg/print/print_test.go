@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/willshen8/cli-search/pkg/file"
+	"github.com/willshen8/cli-search/pkg/parser"
 	"github.com/willshen8/cli-search/pkg/search"
 )
 
@@ -189,9 +189,9 @@ func SetupTest() map[string]map[string]map[string]interface{} {
   	]`)
 
 	dataBase := make(map[string]map[string]map[string]interface{}, 3)
-	organisationMap, _ := file.ParseJsonToMapOfMap(orgData)
-	userMap, _ := file.ParseJsonToMapOfMap(usersData)
-	ticketsMap, _ := file.ParseJsonToMapOfMap(ticketData)
+	organisationMap, _ := parser.ParseJsonToMapOfMap(orgData)
+	userMap, _ := parser.ParseJsonToMapOfMap(usersData)
+	ticketsMap, _ := parser.ParseJsonToMapOfMap(ticketData)
 	dataBase[search.ORGANISATION] = organisationMap
 	dataBase[search.USER] = userMap
 	dataBase[search.TICKET] = ticketsMap

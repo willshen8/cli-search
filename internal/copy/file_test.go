@@ -1,7 +1,6 @@
 package copy
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,7 +10,6 @@ func TestCopyFileSuccess(t *testing.T) {
 	var dummySrcFile = "../../config/organizations.json"
 	var dummyDestFile = "../../config/tickets.json"
 	err := CopyFile(dummySrcFile, dummyDestFile)
-	fmt.Println(err)
 	assert.Nil(t, err)
 }
 

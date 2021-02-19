@@ -11,7 +11,7 @@ import (
 func CopyFile(srcFile string, destFile string) error {
 	input, err := ioutil.ReadFile(srcFile)
 	if err != nil {
-		return errors.NewError(err, fmt.Sprint("Error reading file %s", srcFile))
+		return errors.NewError(err, fmt.Sprintf("Error reading file %s", srcFile))
 	}
 	err = ioutil.WriteFile(destFile, input, 0644)
 	if err != nil {
