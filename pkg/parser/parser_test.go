@@ -1,93 +1,63 @@
 package parser
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/willshen8/cli-search/pkg/search"
 )
 
-func TestParseJsonToMapOfMap(t *testing.T) {
-	var parseTestData = strings.NewReader(`[
-	{
-	  "_id": 101,
-	  "url": "http://initech.zendesk.com/api/v2/organizations/101.json",
-	  "external_id": "9270ed79-35eb-4a38-a46f-35725197ea8d",
-	  "name": "Enthaze",
-	  "domain_names": [
-		"kage.com",
-		"ecratic.com",
-		"endipin.com",
-		"zentix.com"
-	  ],
-	  "created_at": "2016-05-21T11:10:28 -10:00",
-	  "details": "MegaCorp",
-	  "shared_tickets": false,
-	  "tags": [
-		"Fulton",
-		"West",
-		"Rodriguez",
-		"Farley"
-	  ]
-	},
-	{
-	  "_id": 102,
-	  "url": "http://initech.zendesk.com/api/v2/organizations/102.json",
-	  "external_id": "7cd6b8d4-2999-4ff2-8cfd-44d05b449226",
-	  "name": "Nutralab",
-	  "domain_names": [
-		"trollery.com",
-		"datagen.com",
-		"bluegrain.com",
-		"dadabase.com"
-	  ],
-	  "created_at": "2016-04-07T08:21:44 -10:00",
-	  "details": "Non profit",
-	  "shared_tickets": false,
-	  "tags": [
-		"Cherry",
-		"Collier",
-		"Fuentes",
-		"Trevino"
-	  ]
-	}
-  ]`)
-	actual, err := ParseJsonToMapOfMap(parseTestData)
-	assert.Equal(t, nil, err)
-	expectedNumberOfRecords := 2
-	assert.Equal(t, expectedNumberOfRecords, len(actual))
-	assert.Equal(t, "MegaCorp", actual["101"]["details"])
-	assert.Equal(t, false, actual["102"]["shared_tickets"])
-	assert.Equal(t, float64(102), actual["102"]["_id"])
-	assert.Equal(t, "http://initech.zendesk.com/api/v2/organizations/102.json", actual["102"]["url"])
-}
-
-func TestErrorReadingData(t *testing.T) {
-	var errorData = strings.NewReader(``)
-	_, err := ParseJsonToMapOfMap(errorData)
-	assert.NotNil(t, err)
-}
-
-func TestUnmarshallErrorData(t *testing.T) {
-	var errorData = strings.NewReader(`[
+func TestGetFileSuffix(t *testing.T) {
+	tests := []struct {
+		testName string
+		input    string
+		expected string
+	}{
 		{
-			"_id": "101",
-		}
-	]`)
-	_, err := ParseJsonToMapOfMap(errorData)
-	assert.NotNil(t, err)
+			testName: "Valid file name",
+			input:    "hello.json",
+			expected: "hello",
+		},
+		{
+			testName: "File without an extension",
+			input:    "file",
+			expected: "file",
+		},
+		{
+			testName: "File has no extension name",
+			input:    "file.",
+			expected: "file",
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.testName, func(t *testing.T) {
+			actual := GetFileSuffix(tc.input)
+			assert.Equal(t, tc.expected, actual)
+		})
+	}
 }
 
-func TestParseFileAndStoreInDbSuccess(t *testing.T) {
-	dataBase := make(map[string]map[string]map[string]interface{}, 3)
-	dataBase, err := ParseFileAndStoreInDb(search.ORGANISATION, "../../config/organizations.json", dataBase)
-	assert.NotEmpty(t, dataBase[search.ORGANISATION])
-	assert.Equal(t, nil, err)
-}
-
-func TestParseFileAndStoreInDbFail(t *testing.T) {
-	dataBase := make(map[string]map[string]map[string]interface{}, 3)
-	_, err := ParseFileAndStoreInDb(search.ORGANISATION, "nonexistent/directory", dataBase)
-	assert.NotNil(t, err)
+func TestGetFileNamesInDir(t *testing.T) {
+	tests := []struct {
+		testName string
+		input    string
+		expected []string
+	}{
+		{
+			testName: "Current directory",
+			input:    ".",
+			expected: []string{"parser.go", "parser_test.go"},
+		},
+		{
+			testName: "One directory up",
+			input:    "../print",
+			expected: []string{"print.go", "print_test.go"},
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.testName, func(t *testing.T) {
+			actual, err := GetFileNamesInDir(tc.input)
+			assert.Equal(t, nil, err)
+			assert.Equal(t, tc.expected, actual)
+		})
+	}
 }

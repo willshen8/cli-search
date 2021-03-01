@@ -3,11 +3,12 @@ package print
 import (
 	"fmt"
 
+	"github.com/willshen8/cli-search/pkg/db"
 	"github.com/willshen8/cli-search/pkg/search"
 )
 
 // PrintResults prints out the search results and its related entities
-func PrintResults(table string, ids []string, dataBase map[string]map[string]map[string]interface{}) {
+func PrintResults(database db.DB, table string, ids []string) {
 	fmt.Println("----------------------------------------------------------------------")
 	fmt.Println("Search Results: Total number of records found = ", len(ids))
 	for index, val := range ids {
@@ -15,10 +16,10 @@ func PrintResults(table string, ids []string, dataBase map[string]map[string]map
 		fmt.Println("----------------------------- Result ", index+1, "-----------------------------")
 		fmt.Println("----------------------------------------------------------------------")
 
-		for k, v := range dataBase[table][val] {
+		for k, v := range database[table][val] {
 			fmt.Printf("%-20v %-10v\n", k, v)
 		}
-		PrintRelatedEntities(table, val, dataBase)
+		PrintRelatedEntities(database, table, val)
 	}
 	fmt.Println("----------------------------------------------------------------------")
 	fmt.Println("------------------------ End of Search Result ------------------------")
@@ -27,15 +28,15 @@ func PrintResults(table string, ids []string, dataBase map[string]map[string]map
 
 // PrintRelatedEntities takes a lists of ids from search results and returns the related data
 // from the other tables, it will only print out the IDs from the other tables
-func PrintRelatedEntities(table string, id string, dataBase map[string]map[string]map[string]interface{}) {
+func PrintRelatedEntities(database db.DB, table string, id string) {
 	switch table {
-	case search.ORGANISATION:
-		relatedEntities := search.SearchRelatedEntities(table, id, dataBase)
-		PrintEntity(search.USER, relatedEntities)
-		PrintEntity(search.TICKET, relatedEntities)
-	case search.USER:
-		relatedEntities := search.SearchRelatedEntities(table, id, dataBase)
-		PrintEntity(search.TICKET, relatedEntities)
+	case search.ORGANIZATIONS:
+		relatedEntities := search.SearchRelatedEntities(database, table, id)
+		PrintEntity(search.USERS, relatedEntities)
+		PrintEntity(search.TICKETS, relatedEntities)
+	case search.USERS:
+		relatedEntities := search.SearchRelatedEntities(database, table, id)
+		PrintEntity(search.TICKETS, relatedEntities)
 	}
 }
 
@@ -52,15 +53,15 @@ func PrintEntity(table string, m map[string][]string) {
 func PrintAllAvailableFields(table string) {
 	fmt.Println("---------------------- Available fields in ", table, "----------------------")
 	switch table {
-	case search.ORGANISATION:
+	case search.ORGANIZATIONS:
 		for i, v := range search.OrgFields {
 			fmt.Printf("%v: %-0v\n", i+1, v)
 		}
-	case search.USER:
+	case search.USERS:
 		for i, v := range search.UserFields {
 			fmt.Printf("%v: %-0v\n", i+1, v)
 		}
-	case search.TICKET:
+	case search.TICKETS:
 		for i, v := range search.TicketFields {
 			fmt.Printf("%v: %-0v\n", i+1, v)
 		}

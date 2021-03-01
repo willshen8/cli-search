@@ -5,6 +5,7 @@ import (
 
 	"github.com/willshen8/cli-search/internal/copy"
 	"github.com/willshen8/cli-search/internal/errors"
+	"github.com/willshen8/cli-search/pkg/db"
 	"github.com/willshen8/cli-search/pkg/parser"
 	"github.com/willshen8/cli-search/pkg/print"
 	"github.com/willshen8/cli-search/pkg/search"
@@ -14,6 +15,7 @@ import (
 var (
 	args               = os.Args[1:]
 	app                = kingpin.New("CLI-Search", "Welcome to CLI Search!")
+	configDir          = "config"
 	defaultOrgFile     = "config/organizations.json"
 	defaultUsersFile   = "config/users.json"
 	defaultTicketsFile = "config/tickets.json"
@@ -36,7 +38,6 @@ var (
 
 func main() {
 	// database is a three level map with each level contains table -> row -> value
-	dataBase := make(map[string]map[string]map[string]interface{}, 3)
 	switch kingpin.MustParse(app.Parse(args)) {
 	// Process config command
 	case config.FullCommand():
@@ -52,14 +53,22 @@ func main() {
 
 	// Process search command
 	case query.FullCommand():
-		dataBase, err := parser.ParseFileAndStoreInDb(search.ORGANISATION, defaultOrgFile, dataBase)
+		database := db.DB{}
+		filesNames, err := parser.GetFileNamesInDir(configDir)
 		errors.HandleError(err)
-		dataBase, err = parser.ParseFileAndStoreInDb(search.USER, defaultUsersFile, dataBase)
+
+		for _, v := range filesNames {
+			createdTable, err := db.CreateTableFromJsonFile(configDir + "/" + v)
+			errors.HandleError(err)
+			fileName := parser.GetFileSuffix(v)
+			database[fileName] = createdTable
+		}
+		searchResults, err := search.Search(database, *queryTable, *queryField, *queryValue)
 		errors.HandleError(err)
-		dataBase, err = parser.ParseFileAndStoreInDb(search.TICKET, defaultTicketsFile, dataBase)
-		errors.HandleError(err)
-		searchResults, err := search.Search(dataBase[*queryTable], *queryTable, *queryField, *queryValue)
-		errors.HandleError(err)
-		print.PrintResults(*queryTable, searchResults, dataBase)
+		print.PrintResults(database, *queryTable, searchResults)
 	}
+}
+
+func init() {
+
 }
