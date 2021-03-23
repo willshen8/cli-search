@@ -20,6 +20,19 @@ func Search(database db.DB, table string, field string, value string) ([]string,
 		return nil, errors.NewError(errors.ErrInvalidTable, table)
 	}
 
+	availableFields := make(map[string]bool)
+	var randomRow db.Row
+	for _, v := range database[table] {
+		randomRow = v
+		break
+	}
+	for key := range randomRow { // build a map to check whether a field exists
+		availableFields[key] = true
+	}
+	if _, found := availableFields[field]; !found {
+		return nil, errors.NewError(errors.ErrInvalidSearchField, field)
+	}
+
 	var result []string
 	for k, v := range database[table] {
 		if fmt.Sprintf("%v", v[field]) == value {

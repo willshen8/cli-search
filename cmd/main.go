@@ -57,18 +57,14 @@ func main() {
 		filesNames, err := parser.GetFileNamesInDir(configDir)
 		errors.HandleError(err)
 
-		for _, v := range filesNames {
-			createdTable, err := db.CreateTableFromJsonFile(configDir + "/" + v)
+		for _, file := range filesNames {
+			createdTable, err := db.CreateTableFromJsonFile(configDir + "/" + file)
 			errors.HandleError(err)
-			fileName := parser.GetFileSuffix(v)
+			fileName := parser.GetFileSuffix(file)
 			database[fileName] = createdTable
 		}
 		searchResults, err := search.Search(database, *queryTable, *queryField, *queryValue)
 		errors.HandleError(err)
 		print.PrintResults(database, *queryTable, searchResults)
 	}
-}
-
-func init() {
-
 }
