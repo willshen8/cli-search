@@ -6,12 +6,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCopyFileSuccess(t *testing.T) {
-	var dummySrcFile = "../../config/organizations.json"
-	var dummyDestFile = "../../config/tickets.json"
-	err := CopyFile(dummySrcFile, dummyDestFile)
-	assert.Nil(t, err)
-}
+// func TestCopyFileSuccess(t *testing.T) {
+// 	var dummySrcFile = "../../config/organizations.json"
+// 	var dummyDestFile = "../../config/tickets.json"
+// 	err := CopyFile(dummySrcFile, dummyDestFile)
+// 	assert.Nil(t, err)
+// }
 
 func TestCopyFileFail(t *testing.T) {
 	var dummySrcFile = "/hello.txt"
