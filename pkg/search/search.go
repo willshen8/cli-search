@@ -50,7 +50,7 @@ func SearchRelatedEntities(database db.DB, table string, id string) map[string][
 	var userIds, ticketIds []string
 	switch table {
 	case ORGANIZATIONS:
-		for _, foreignKey := range db.OrganizationsEnity.ForeignKeys {
+		for _, foreignKey := range db.OrganizationsEntity.ForeignKeys {
 			foundUsers, err := Search(database, USERS, foreignKey, id) // search user table first
 			userIds = append(userIds, foundUsers...)
 			errors.HandleError(err)

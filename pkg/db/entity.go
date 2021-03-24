@@ -6,5 +6,5 @@ type entity struct {
 	ForeignKeys []string
 }
 
-var OrganizationsEnity = entity{Table: "organizations", ForeignKeys: []string{"organization_id"}}
+var OrganizationsEntity = entity{Table: "organizations", ForeignKeys: []string{"organization_id"}}
 var UsersEntity = entity{Table: "users", ForeignKeys: []string{"assignee_id", "submitter_id"}}
