@@ -30,13 +30,13 @@ func PrintResults(database db.DB, table string, ids []string) {
 // from the other tables, it will only print out the IDs from the other tables
 func PrintRelatedEntities(database db.DB, table string, id string) {
 	switch table {
-	case search.ORGANIZATIONS:
+	case "organizations":
 		relatedEntities := search.SearchRelatedEntities(database, table, id)
-		PrintEntity(search.USERS, relatedEntities)
-		PrintEntity(search.TICKETS, relatedEntities)
-	case search.USERS:
+		PrintEntity("users", relatedEntities)
+		PrintEntity("tickets", relatedEntities)
+	case "users":
 		relatedEntities := search.SearchRelatedEntities(database, table, id)
-		PrintEntity(search.TICKETS, relatedEntities)
+		PrintEntity("tickets", relatedEntities)
 	}
 }
 
@@ -53,15 +53,15 @@ func PrintEntity(table string, m map[string][]string) {
 func PrintAllAvailableFields(table string) {
 	fmt.Println("---------------------- Available fields in ", table, "----------------------")
 	switch table {
-	case search.ORGANIZATIONS:
+	case "organizations":
 		for i, v := range search.OrgFields {
 			fmt.Printf("%v: %-0v\n", i+1, v)
 		}
-	case search.USERS:
+	case "users":
 		for i, v := range search.UserFields {
 			fmt.Printf("%v: %-0v\n", i+1, v)
 		}
-	case search.TICKETS:
+	case "tickets":
 		for i, v := range search.TicketFields {
 			fmt.Printf("%v: %-0v\n", i+1, v)
 		}

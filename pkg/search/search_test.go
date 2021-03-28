@@ -1,6 +1,7 @@
 package search
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -74,7 +75,8 @@ func TestSearchRelatedEntitiesByOrgID(t *testing.T) {
 	expectedNumOfRelatedUsers := 1
 	expectedNumOfRelatedTickets := 1
 	expectedUserID := "1"
-	expectedTicketID := "101"
+	expectedTicketID := "436bf9b0-1147-4c0a-8439-6f79833bff5b"
+	fmt.Println(actualResult)
 	assert.Equal(t, expectedNumOfRelatedUsers, len(actualResult["users"]))
 	assert.Equal(t, expectedNumOfRelatedTickets, len(actualResult["tickets"]))
 	assert.Equal(t, expectedUserID, actualResult["users"][0])

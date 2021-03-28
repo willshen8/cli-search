@@ -8,12 +8,6 @@ import (
 	"github.com/willshen8/cli-search/pkg/db"
 )
 
-var (
-	ORGANIZATIONS = "organizations"
-	USERS         = "users"
-	TICKETS       = "tickets"
-)
-
 // search takes any table, a field name and a value and returns a slice of IDs of the records found
 func Search(database db.DB, table string, field string, value string) ([]string, error) {
 	if _, found := database[table]; !found {
@@ -49,24 +43,24 @@ func SearchRelatedEntities(database db.DB, table string, id string) map[string][
 	var result = make(map[string][]string)
 	var userIds, ticketIds []string
 	switch table {
-	case ORGANIZATIONS:
+	case "organizations":
 		for _, foreignKey := range db.OrganizationsEntity.ForeignKeys {
-			foundUsers, err := Search(database, USERS, foreignKey, id) // search user table first
+			foundUsers, err := Search(database, "users", foreignKey, id) // search user table first
 			userIds = append(userIds, foundUsers...)
 			errors.HandleError(err)
-			foundTickets, err := Search(database, TICKETS, foreignKey, id) // then search ticket table
+			foundTickets, err := Search(database, "tickets", foreignKey, id) // then search ticket table
 			ticketIds = append(ticketIds, foundTickets...)
 			errors.HandleError(err)
 		}
-	case USERS:
+	case "users":
 		for _, foreignKey := range db.UsersEntity.ForeignKeys {
-			foundTickets, err := Search(database, TICKETS, foreignKey, id) // then search ticket table
+			foundTickets, err := Search(database, "tickets", foreignKey, id) // then search ticket table
 			ticketIds = append(ticketIds, foundTickets...)
 			errors.HandleError(err)
 		}
 	}
 	// store the 3 sets of results into the result map
-	result[USERS] = userIds
-	result[TICKETS] = ticketIds
+	result["users"] = userIds
+	result["tickets"] = ticketIds
 	return result
 }

@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -60,4 +61,12 @@ func TestGetFileNamesInDir(t *testing.T) {
 			assert.Equal(t, tc.expected, actual)
 		})
 	}
+}
+
+func TestReadJsonFile(t *testing.T) {
+	var data = strings.NewReader(`helloWorld!`)
+	expectedData := "helloWorld!"
+	actual, err := ReadJsonFile(data)
+	assert.Equal(t, expectedData, string(actual))
+	assert.Equal(t, nil, err)
 }
