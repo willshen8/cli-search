@@ -38,6 +38,7 @@ var (
 
 func main() {
 	// database is a three level map with each level contains table -> row -> value
+	database := SetupDatabase()
 	switch kingpin.MustParse(app.Parse(args)) {
 	// Process config command
 	case config.FullCommand():
@@ -49,22 +50,26 @@ func main() {
 		errors.HandleError(err)
 
 	case list.FullCommand():
-		print.PrintAllAvailableFields(*listTable)
+		print.PrintAllAvailableFields(database, *listTable)
 
 	// Process search command
 	case query.FullCommand():
-		database := db.DB{}
-		filesNames, err := parser.GetFileNamesInDir(configDir)
-		errors.HandleError(err)
-
-		for _, file := range filesNames {
-			createdTable, err := db.CreateTableFromJsonFile(configDir + "/" + file)
-			errors.HandleError(err)
-			fileName := parser.GetFileSuffix(file)
-			database[fileName] = createdTable
-		}
 		searchResults, err := search.Search(database, *queryTable, *queryField, *queryValue)
 		errors.HandleError(err)
 		print.PrintResults(database, *queryTable, searchResults)
 	}
+}
+
+func SetupDatabase() db.DB {
+	database := db.DB{}
+	filesNames, err := parser.GetFileNamesInDir(configDir)
+	errors.HandleError(err)
+
+	for _, file := range filesNames {
+		createdTable, err := db.CreateTableFromJsonFile(configDir + "/" + file)
+		errors.HandleError(err)
+		fileName := parser.GetFileSuffix(file)
+		database[fileName] = createdTable
+	}
+	return database
 }

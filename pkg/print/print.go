@@ -11,15 +11,15 @@ import (
 func PrintResults(database db.DB, table string, ids []string) {
 	fmt.Println("----------------------------------------------------------------------")
 	fmt.Println("Search Results: Total number of records found = ", len(ids))
-	for index, val := range ids {
+	for index, id := range ids {
 		fmt.Println("----------------------------------------------------------------------")
 		fmt.Println("----------------------------- Result ", index+1, "-----------------------------")
 		fmt.Println("----------------------------------------------------------------------")
 
-		for k, v := range database[table][val] {
+		for k, v := range database[table][id] {
 			fmt.Printf("%-20v %-10v\n", k, v)
 		}
-		PrintRelatedEntities(database, table, val)
+		PrintRelatedEntities(database, table, id)
 	}
 	fmt.Println("----------------------------------------------------------------------")
 	fmt.Println("------------------------ End of Search Result ------------------------")
@@ -50,21 +50,21 @@ func PrintEntity(table string, m map[string][]string) {
 }
 
 // PrintAllAvailableFields prints all the available fields in a table
-func PrintAllAvailableFields(table string) {
-	fmt.Println("---------------------- Available fields in ", table, "----------------------")
-	switch table {
-	case "organizations":
-		for i, v := range search.OrgFields {
-			fmt.Printf("%v: %-0v\n", i+1, v)
-		}
-	case "users":
-		for i, v := range search.UserFields {
-			fmt.Printf("%v: %-0v\n", i+1, v)
-		}
-	case "tickets":
-		for i, v := range search.TicketFields {
-			fmt.Printf("%v: %-0v\n", i+1, v)
-		}
+func PrintAllAvailableFields(database db.DB, table string) {
+	var availableFields []string
+	var randomRow db.Row
+	for _, v := range database[table] {
+		randomRow = v
+		break
 	}
+	for key := range randomRow { // build a map to check whether a field exists
+		availableFields = append(availableFields, key)
+	}
+
+	fmt.Println("---------------------- Available fields in", table, "----------------------")
+	for i, v := range availableFields {
+		fmt.Printf("%v: %-0v\n", i+1, v)
+	}
+
 	fmt.Println("---------------------------- End of the list ----------------------------")
 }

@@ -24,22 +24,25 @@ func TestPrintResultsUsingOrgTable(t *testing.T) {
 }
 
 func TestPrintAllAvailableFieldsInOrgTable(t *testing.T) {
+	dB := CreateDB()
 	actual := captureOutput(func() {
-		PrintAllAvailableFields("organizations")
+		PrintAllAvailableFields(dB, "organizations")
 	})
 	assert.NotEmpty(t, actual)
 }
 
 func TestPrintAllAvailableFieldsInUserTable(t *testing.T) {
+	dB := CreateDB()
 	actual := captureOutput(func() {
-		PrintAllAvailableFields("users")
+		PrintAllAvailableFields(dB, "users")
 	})
 	assert.NotEmpty(t, actual)
 }
 
 func TestPrintAllAvailableFieldsInTicketTable(t *testing.T) {
+	dB := CreateDB()
 	actual := captureOutput(func() {
-		PrintAllAvailableFields("tickets")
+		PrintAllAvailableFields(dB, "tickets")
 	})
 	assert.NotEmpty(t, actual)
 }
