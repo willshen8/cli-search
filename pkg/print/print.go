@@ -36,7 +36,7 @@ func PrintRelatedEntities(database db.DB, table string, id string) {
 		PrintEntity("tickets", relatedEntities)
 	case "users":
 		relatedEntities := search.SearchRelatedEntities(database, table, id)
-		PrintEntity("tickets", relatedEntities)
+		PrintEntity("organizations", relatedEntities)
 	}
 }
 

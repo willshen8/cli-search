@@ -12,7 +12,7 @@ import (
 
 func SetupDatabase() db.DB {
 	database := db.DB{}
-	organizationsRecord_1 := parser.DataRecord{"_id": 101, "url": "http://initech.zendesk.com/api/v2/organizations/101.json"}
+	organizationsRecord_1 := parser.DataRecord{"_id": 101, "url": "http://initech.zendesk.com/api/v2/organizations/101.json", "tags": []string{"Fulton", "West", "Rodriguez", "Farley"}}
 	organizationsRecord_2 := parser.DataRecord{"_id": 102, "url": "http://initech.zendesk.com/api/v2/organizations/102.json"}
 	organizationsDataRecords := []parser.DataRecord{organizationsRecord_1, organizationsRecord_2}
 	organizationsRows := db.CreateRows(organizationsDataRecords)
@@ -59,6 +59,15 @@ func TestSearchInvalidTable(t *testing.T) {
 	expectedErr := errors.NewError(errors.ErrInvalidTable, "invalidTable").Error()
 	assert.Equal(t, expectedResult, actual)
 	assert.Equal(t, expectedErr, err.Error())
+}
+
+func TestSearchByTagName(t *testing.T) {
+	database := SetupDatabase()
+	actual, err := Search(database, "organizations", "tags", "West")
+	fmt.Println(actual)
+	expectedIDs := []string{"101"}
+	assert.Equal(t, expectedIDs, actual)
+	assert.Equal(t, nil, err)
 }
 
 func TestSearchWithoutSpecifiedValue(t *testing.T) {

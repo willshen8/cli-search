@@ -2,6 +2,7 @@ package search
 
 import (
 	"fmt"
+	"reflect"
 	"sort"
 
 	"github.com/willshen8/cli-search/internal/errors"
@@ -29,21 +30,16 @@ func Search(database db.DB, table string, field string, value string) ([]string,
 
 	var result []string
 	for k, v := range database[table] {
-		// switch reflect.TypeOf(v[field]).Kind() {
-		// case reflect.Slice: // allow search values in slices
-		// 	s := reflect.ValueOf(v[field])
-		// 	for i := 0; i < s.Len(); i++ {
-		// 		actualValue := s.Index(i).Interface().(string)
-		// 		if actualValue == value {
-		// 			result = append(result, string(k))
-		// 		}
-		// 	}
-		// default:
-		// 	if fmt.Sprintf("%v", v[field]) == value {
-		// 		result = append(result, string(k))
-		// 	}
-		// }
-		if fmt.Sprintf("%v", v[field]) == value {
+		if v[field] != nil && reflect.TypeOf(v[field]).Kind() == reflect.Slice { // check for field that is a slice
+			s := reflect.ValueOf(v[field])
+			for i := 0; i < s.Len(); i++ {
+				actualValue := s.Index(i).Interface().(string)
+				if actualValue == value {
+					fmt.Println("match = ", actualValue)
+					result = append(result, string(k))
+				}
+			}
+		} else if fmt.Sprintf("%v", v[field]) == value {
 			result = append(result, string(k))
 		}
 	}
