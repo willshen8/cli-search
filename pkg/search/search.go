@@ -35,7 +35,6 @@ func Search(database db.DB, table string, field string, value string) ([]string,
 			for i := 0; i < s.Len(); i++ {
 				actualValue := s.Index(i).Interface().(string)
 				if actualValue == value {
-					fmt.Println("match = ", actualValue)
 					result = append(result, string(k))
 				}
 			}
@@ -51,7 +50,7 @@ func Search(database db.DB, table string, field string, value string) ([]string,
 // and then store the results in a map of slice
 func SearchRelatedEntities(database db.DB, table string, id string) map[string][]string {
 	var result = make(map[string][]string)
-	var userIds, ticketIds []string
+	var userIds, ticketIds, orgIds []string
 	switch table {
 	case "organizations":
 		for _, foreignKey := range db.OrganizationsEntity.ForeignKeys {
@@ -72,5 +71,6 @@ func SearchRelatedEntities(database db.DB, table string, id string) map[string][
 	// store the 3 sets of results into the result map
 	result["users"] = userIds
 	result["tickets"] = ticketIds
+	result["organizations"] = orgIds
 	return result
 }

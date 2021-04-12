@@ -8,3 +8,4 @@ type entity struct {
 
 var OrganizationsEntity = entity{Table: "organizations", ForeignKeys: []string{"organization_id"}}
 var UsersEntity = entity{Table: "users", ForeignKeys: []string{"assignee_id", "submitter_id"}}
+var TicketsEntity = entity{Table: "tickets", ForeignKeys: []string{"external_id"}}
