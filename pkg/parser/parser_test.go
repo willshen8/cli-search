@@ -37,7 +37,7 @@ func TestGetFileSuffix(t *testing.T) {
 	}
 }
 
-func TestGetFileNamesInDir(t *testing.T) {
+func TestGetFileNamesInDirSuccess(t *testing.T) {
 	tests := []struct {
 		testName string
 		input    string
@@ -63,10 +63,32 @@ func TestGetFileNamesInDir(t *testing.T) {
 	}
 }
 
+func TestGetFileNamesInDirFail(t *testing.T) {
+	input := "../dummyFolder"
+	expected := []string(nil)
+	actual, err := GetFileNamesInDir(input)
+	assert.NotNil(t, err)
+	assert.Equal(t, expected, actual)
+}
+
 func TestReadJsonFile(t *testing.T) {
 	var data = strings.NewReader(`helloWorld!`)
 	expectedData := "helloWorld!"
 	actual, err := ReadJsonFile(data)
 	assert.Equal(t, expectedData, string(actual))
 	assert.Equal(t, nil, err)
+}
+
+func TestUnmarshalData(t *testing.T) {
+	data := []byte(`[{"_id": "101"}]`)
+	actual, err := UnmarshalData(data)
+	expected := []DataRecord{{"_id": "101"}}
+	assert.Equal(t, expected, actual)
+	assert.Equal(t, nil, err)
+}
+
+func TestUnmarshalDataWithFailure(t *testing.T) {
+	data := []byte(`[{"_id"}]`)
+	_, err := UnmarshalData(data)
+	assert.NotNil(t, err)
 }
